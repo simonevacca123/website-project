@@ -149,3 +149,11 @@ File applicativi modificati in questo passo: `index.html`, `style.css`, `app.js`
 Il 5 novembre 2026, dopo aver visionato l'intervento sulla homepage, il proprietario ha autorizzato l'assistente a eseguire commit e push delle modifiche correnti. Questa indicazione sostituisce per questo salvataggio il precedente divieto riportato nelle sezioni storiche. Le regole di lavoro, il README e la roadmap sono stati aggiornati di conseguenza.
 
 Il salvataggio richiesto comprende homepage, contatto email, documentazione e strumenti di verifica. Screenshot generati, cache, backup e configurazioni riservate restano esclusi tramite `.gitignore`. Non è stata autorizzata la pubblicazione su Aruba.
+
+### Workflow remoto rilevato durante la sincronizzazione
+
+Il ramo remoto conteneva un aggiornamento aggiuntivo, `806af65`, che configurava un trasferimento FTP su Aruba a ogni push su `main`, senza un elenco dei soli file pubblici. L'aggiornamento remoto è stato preservato nella cronologia e integrato prima di aggiungere le modifiche locali.
+
+Per rispettare la richiesta di aggiornare GitHub senza pubblicare su Aruba, `.github/workflows/deploy.yml` è stato convertito in **Controlli manuali del sito**: solo `workflow_dispatch`, permessi di lettura del codice e controlli locali di collegamenti e sintassi. Nessun passo FTP e nessun accesso ai segreti Aruba. Il precedente trasferimento è consultabile nella cronologia; la futura pubblicazione resta subordinata alle verifiche descritte in `DEPLOYMENT.md`.
+
+Le istruzioni del workflow corrispondono ai controlli eseguiti nella macchina di sviluppo. L'esecuzione del workflow sui runner GitHub non è stata avviata o verificata. Non sono stati ispezionati i precedenti run GitHub né lo stato del sito online.

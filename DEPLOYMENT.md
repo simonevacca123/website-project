@@ -1,6 +1,6 @@
 # Pubblicare su Aruba, con calma
 
-**Questa è una guida preparatoria. In questa fase non è stato eseguito alcun caricamento su Aruba e non è stata configurata automazione.** Il piano Basic Linux e il sito già online sono informazioni fornite dal proprietario, non verificate accedendo al pannello.
+**Questa è una guida preparatoria. Non è stato eseguito alcun caricamento su Aruba da parte dell'assistente.** Nel codice aggiornato il workflow GitHub è dedicato ai soli controlli manuali, senza automazione di pubblicazione. Il piano Basic Linux e il sito già online sono informazioni fornite dal proprietario, non verificate accedendo al pannello.
 
 ## Tre posti diversi
 
@@ -47,6 +47,8 @@ Un caricamento manuale di più file può mostrare temporaneamente versioni miste
 
 ## Automazione futura
 
-Il workflow GitHub Actions sarà preparato soltanto dopo aver verificato l'accesso supportato. Dovrà avere avvio manuale o approvazione esplicita iniziale, test prima del trasferimento, credenziali in Actions Secrets, elenco esplicito dei file da pubblicare, backup e procedura di ripristino. Nessuna cancellazione remota automatica.
+Il workflow di pubblicazione GitHub Actions sarà preparato soltanto dopo aver verificato l'accesso supportato. Dovrà avere avvio manuale o approvazione esplicita iniziale, test prima del trasferimento, credenziali in Actions Secrets, elenco esplicito dei file da pubblicare, backup e procedura di ripristino. Nessuna cancellazione remota automatica.
+
+Il file attuale `.github/workflows/deploy.yml` esegue soltanto controlli statici con avvio manuale. Sostituisce il precedente trasferimento FTP automatico conservato nella cronologia al commit `806af65`. Il workflow precedente non va ripristinato per pubblicare senza prima verificare protocollo, backup ed esclusione dei file interni. Non sono state lette o modificate credenziali dell'hosting.
 
 Non sono ancora richiesti segreti: prima identifichiamo il servizio e il protocollo realmente necessari. La preparazione di un workflow non autorizza ad attivarlo o a pubblicare.

@@ -32,7 +32,9 @@ Avvio, verifiche, struttura e distinzione tra copia locale, GitHub e Aruba sono 
 
 ## Fase 4 — Pubblicazione automatica: da progettare
 
-Prima verificare nel pannello Aruba protocollo sicuro effettivamente disponibile, server e directory pubblica. Poi preparare GitHub Actions con avvio manuale o approvazione, segreti protetti, test, backup, soli file pubblici e nessuna cancellazione automatica. Al momento non esiste un workflow di deploy e non è stata provata una connessione all'hosting.
+Il workflow `.github/workflows/deploy.yml` è ora dedicato ai soli controlli statici, avviabili manualmente. Durante la sincronizzazione è stato rilevato un precedente workflow remoto che trasferiva file tramite FTP a ogni push: la versione aggiornata rimuove il trasferimento, così il salvataggio su GitHub non pubblica anche il sito.
+
+Prima di preparare il deploy occorre verificare nel pannello Aruba protocollo sicuro effettivamente disponibile, server e directory pubblica. Poi configurare avvio manuale o approvazione, segreti protetti, test, backup, soli file pubblici e nessuna cancellazione automatica. Non è stata provata una connessione all'hosting né avviato il workflow su GitHub.
 
 ## Fase 5 — In seguito, solo quando serve
 

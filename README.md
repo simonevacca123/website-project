@@ -17,6 +17,7 @@ Non devi leggere tutta la documentazione insieme. Comincia da questa pagina; [RO
 | `assets/favicon.svg` | Piccola icona della scheda del browser. |
 | `scripts/check_site.py` | Controllo automatico dei collegamenti interni e delle risorse. |
 | `tests/browser_smoke.py` | Prova delle funzioni principali in un browser automatico. |
+| `.github/workflows/deploy.yml` | Controlli statici ad avvio manuale su GitHub; nessun caricamento su Aruba. |
 
 ## Aprire il sito durante lo sviluppo
 
@@ -52,6 +53,8 @@ python3 tests/browser_smoke.py
 ```
 
 Il test avvia e arresta da solo un server temporaneo; non serve prima avviare la porta 8000. Richiede gli strumenti di test Playwright per Python e Chromium, già presenti in questa macchina. Non sono dipendenze del sito e non vanno caricati su Aruba. Su un altro computer, se mancano, puoi seguire intanto i controlli manuali in [CHECKLIST.md](CHECKLIST.md).
+
+Su GitHub è predisposto il workflow **Controlli manuali del sito**, nella sezione **Actions**. Con **Run workflow** si avviano il controllo dei collegamenti e della sintassi JavaScript. Il nome del file è ancora `deploy.yml`, ma il suo contenuto non trasferisce file su Aruba e non si avvia a ogni push. Non esegue i test browser: quelli restano un controllo distinto. Non è stato avviato su GitHub durante questa preparazione.
 
 ## Contatti e progetti: situazione attuale
 
