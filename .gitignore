@@ -1,0 +1,21 @@
+# Credenziali e configurazioni personali: non devono finire su GitHub.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Strumenti locali e file temporanei.
+.venv/
+__pycache__/
+*.py[cod]
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# Backup, pacchetti di pubblicazione e risultati dei test.
+/backups/
+/dist/
+/test-results/
+/playwright-report/
