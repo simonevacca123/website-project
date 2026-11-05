@@ -26,8 +26,11 @@ Le caselle sono lasciate vuote perché vanno compilate **per ciascuna nuova vers
 
 ## Prima di caricare su Aruba
 
-- [ ] Autorizzazione esplicita alla pubblicazione.
+- [ ] Pubblicazione compresa nell'autorizzazione ai push su main; per operazioni diverse verificare la richiesta del proprietario.
+- [ ] Test del deploy e della homepage superati prima del collegamento al server.
+- [ ] Directory del sito riconosciuta univocamente o configurata con FTP_SERVER_DIR.
 - [ ] Backup dei file online da sostituire, conservato fuori dalla cartella pubblica.
+- [ ] Artefatto di backup salvato su GitHub prima delle scritture.
 - [ ] Protocollo sicuro, destinazione e certificato/chiave verificati.
 - [ ] Solo file pubblici nell'elenco di caricamento, senza credenziali, documenti interni, test o backup.
 - [ ] Nessuna opzione che elimini automaticamente i file remoti.
@@ -39,3 +42,4 @@ Le caselle sono lasciate vuote perché vanno compilate **per ciascuna nuova vers
 - [ ] Recapito e percorso email ricontrollati.
 - [ ] Annotata la versione pubblicata e il backup corrispondente.
 - [ ] In caso di errore, ripristinati i file dal backup e verificato il risultato.
+- [ ] Run GitHub completo verde, compreso il confronto HTTPS della homepage e delle risorse con il pacchetto.

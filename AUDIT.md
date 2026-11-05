@@ -157,3 +157,24 @@ Il ramo remoto conteneva un aggiornamento aggiuntivo, `806af65`, che configurava
 Per rispettare la richiesta di aggiornare GitHub senza pubblicare su Aruba, `.github/workflows/deploy.yml` è stato convertito in **Controlli manuali del sito**: solo `workflow_dispatch`, permessi di lettura del codice e controlli locali di collegamenti e sintassi. Nessun passo FTP e nessun accesso ai segreti Aruba. Il precedente trasferimento è consultabile nella cronologia; la futura pubblicazione resta subordinata alle verifiche descritte in `DEPLOYMENT.md`.
 
 Le istruzioni del workflow corrispondono ai controlli eseguiti nella macchina di sviluppo. L'esecuzione del workflow sui runner GitHub non è stata avviata o verificata. Non sono stati ispezionati i precedenti run GitHub né lo stato del sito online.
+
+## Aggiornamento — Pubblicazione automatica richiesta dal proprietario
+
+Il 5 novembre 2026 il proprietario ha esplicitamente richiesto che i commit arrivati su GitHub aggiornino il sito online e ha autorizzato il ripristino di questo flusso. Questa richiesta sostituisce il precedente vincolo di solo avvio manuale per la pubblicazione su main.
+
+Implementato il workflow **Pubblica sito su Aruba** con trigger push su main e workflow_dispatch, esecuzioni seriali, controlli statici, test browser, test di trasferimento, pacchetto pubblico esplicito, backup conservato prima della scrittura, trasferimento FTPS con TLS verificato, verifica dei file caricati e confronto della homepage HTTPS con il contenuto atteso. Non sono consentiti FTP non cifrato o disattivazione della verifica del certificato.
+
+`scripts/deploy_site.py` esclude documentazione, test, script e credenziali dal pacchetto; carica l'HTML per ultimo e non elimina file remoti preesistenti. Cerca una sola directory riconoscibile come il sito del proprietario; se la ricerca è ambigua, richiede FTP_SERVER_DIR. Verifica che i file non siano cambiati dopo il backup. In caso di errore di trasferimento tenta di ripristinare i file preesistenti coinvolti; se la connessione non è più utilizzabile il ripristino può fallire e resta disponibile l'artefatto salvato.
+
+Verifiche locali completate:
+
+- 16 test, tutti passati e nessuno saltato: pacchetto ripetibile, esclusione di file riservati e symlink, backup integro senza scritture, cartella ambigua/estranea rifiutata, modifiche esterne dopo il backup rilevate, trasferimento interrotto e ripristino, file estranei conservati, credenziali mancanti bloccate prima della connessione.
+- Le prove di integrazione usano un vero server FTPS locale e un server HTTPS locale. Certificato di test reso attendibile esplicitamente: verifica TLS attiva. Un certificato non attendibile viene rifiutato; una versione HTTPS differente viene rilevata.
+- Sette gruppi di test browser, più il caso senza email, passati con Chromium di sistema. Il runner GitHub installerà invece il browser gestito dalla versione fissata di Playwright: questo passaggio sul runner non è ancora stato verificato.
+- 26 riferimenti statici validi, sintassi JavaScript valida, pacchetto corrente composto dai cinque soli file pubblici. YAML del workflow letto e verificato per trigger, permessi, serializzazione e ordine backup/artefatto/caricamento.
+
+Limiti esterni ancora presenti: l'API GitHub, la guida ufficiale Aruba e il dominio pubblico sono bloccati dal proxy di questa macchina con 403. Non è stato quindi possibile leggere gli errori dei precedenti run, elencare i Secrets GitHub o verificare il supporto FTPS e la cartella del vero hosting. La presenza di GH_TOKEN è stata controllata senza leggerne o mostrarne il valore; l'operazione GitHub API è stata comunque negata dalla rete.
+
+Sono state salvate nella bozza dell'ambiente le aggiunte di rete api.github.com, guide.hosting.aruba.it, www.simonevacca.it e simonevacca.it, preservando i preset esistenti. La bozza non è applicata al runtime: occorrono revisione/salvataggio nelle impostazioni e pubblicazione dell'ambiente. Nessun nuovo Secret FTP è stato richiesto nell'ambiente cloud; il workflow riutilizza i nomi dei GitHub Actions Secrets già previsti dal tentativo precedente.
+
+Il completamento dei test locali non dimostra un deploy riuscito su Aruba. Occorre ancora controllare il primo run reale e gli eventuali dati mancanti. Questa distinzione resta necessaria finché l'accesso esterno non è disponibile o il proprietario non fornisce l'esito del run.

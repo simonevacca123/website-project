@@ -1,23 +1,84 @@
-name: Controlli manuali del sito
+name: Pubblica sito su Aruba
 
-# La pubblicazione su Aruba verrà configurata dopo aver verificato
-# protocollo sicuro, file pubblici, backup e autorizzazione al deploy.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: aruba-production
+  cancel-in-progress: false
+
 jobs:
-  checks:
-    name: Verifica dei file statici
+  publish:
+    name: Test, backup e pubblicazione FTPS
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SITE_URL: https://www.simonevacca.it
+      DEPLOY_REVISION: ${{ github.sha }}
+      USE_PLAYWRIGHT_BROWSER: '1'
     steps:
       - name: Scarica il codice
         uses: actions/checkout@v4
+
+      - name: Prepara Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prepara Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
 
       - name: Controlla collegamenti e sintassi JavaScript
         run: |
           python3 scripts/check_site.py
           node --check app.js
           node --check contenuti.js
+
+      - name: Installa gli strumenti di test
+        run: |
+          python3 -m pip install --disable-pip-version-check -r requirements-test.txt
+          python3 -m playwright install --with-deps chromium
+
+      - name: Prova backup, trasferimento FTPS e homepage
+        run: |
+          python3 -m unittest discover -s tests -p 'test_deploy_*.py' -v
+          python3 -u tests/browser_smoke.py
+
+      - name: Prepara soltanto i file pubblici
+        run: python3 scripts/deploy_site.py build
+
+      - name: Salva i file online prima di modificarli
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ vars.FTP_SERVER_DIR || secrets.FTP_SERVER_DIR }}
+          FTP_PORT: ${{ vars.FTP_PORT }}
+        run: python3 scripts/deploy_site.py backup
+
+      - name: Conserva il backup su GitHub prima del caricamento
+        uses: actions/upload-artifact@v4
+        with:
+          name: aruba-backup-${{ github.run_id }}-${{ github.run_attempt }}
+          path: backups/predeploy/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Carica e verifica i file via FTPS
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ vars.FTP_SERVER_DIR || secrets.FTP_SERVER_DIR }}
+          FTP_PORT: ${{ vars.FTP_PORT }}
+        run: python3 scripts/deploy_site.py deploy
+
+      - name: Controlla la versione visibile sul sito HTTPS
+        run: python3 scripts/deploy_site.py verify

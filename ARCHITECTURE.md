@@ -51,3 +51,11 @@ Una directory con `index.html` permette percorsi come `/lab/` senza un router o 
 Per la Fase 1 valuteremo di estendere gradualmente gli oggetti di `contenuti.js` con identificatore, natura del progetto (reale o dimostrativo), problema affrontato, soluzione, stato e collegamenti. Gli elementi sperimentali devono essere distinti dai lavori per clienti. Non è stata ancora cambiata la struttura dati: le pagine attuali continuano a usare i campi esistenti.
 
 Ogni esperimento avrà il proprio JavaScript. Un backend, cioè codice eseguito su un server, si valuterà solo quando una funzione concreta lo richiederà. Non si presume che Aruba Basic Linux possa mantenere servizi Node.js o AI sempre accesi.
+
+## Pubblicazione automatica
+
+Il workflow GitHub esegue controlli e test prima del deploy. `scripts/deploy_site.py` usa soltanto Python standard per produrre `dist/site` con un elenco esplicito di file, creare un backup remoto locale, trasferire tramite FTPS con certificato verificato e controllare il risultato HTTPS. Il backup viene conservato come artefatto GitHub prima della scrittura sul server.
+
+La configurazione FTP viene letta dai Secrets del runner; non viene salvata nei file pubblici. I pacchetti di `requirements-test.txt` servono solo ai test: includono un browser e un server FTPS locale di prova. Aruba continua a ricevere solo HTML, CSS, JavaScript e risorse statiche.
+
+Le nuove directory pubbliche richiederanno un aggiornamento deliberato dell'elenco di pubblicazione. Il workflow non presume che tutte le cartelle del repository appartengano al sito.

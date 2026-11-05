@@ -6,6 +6,7 @@ Non invia email e non contatta Aruba. Il server è temporaneo e locale.
 from datetime import datetime
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import os
 from pathlib import Path
 from shutil import which
 from threading import Thread
@@ -37,7 +38,7 @@ def verify(base):
     print('PASS 1/7: cinque risorse pubbliche disponibili con tipo corretto')
 
     with sync_playwright() as p:
-        executable = which('chromium') or which('chromium-browser')
+        executable = None if os.environ.get('USE_PLAYWRIGHT_BROWSER') == '1' else (which('chromium') or which('chromium-browser'))
         options = {'executable_path': executable} if executable else {}
         browser = p.chromium.launch(headless=True, args=['--no-sandbox'], **options)
         context = browser.new_context(viewport={'width': 1440, 'height': 1000})

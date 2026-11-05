@@ -1,6 +1,6 @@
 # Il percorso, un passo alla volta
 
-Ogni passo deve lasciare una versione funzionante. Le attività future in questa pagina non sono già implementate. Il proprietario ha autorizzato commit e push delle modifiche correnti il 5 novembre 2026. Merge, tag e pubblicazione su Aruba restano subordinati a una richiesta specifica.
+Ogni passo deve lasciare una versione funzionante. Le attività future in questa pagina non sono già implementate. Il proprietario ha autorizzato commit e push delle modifiche correnti e successivamente ha richiesto la pubblicazione automatica su Aruba. Merge e tag restano subordinati a una richiesta specifica.
 
 ## Fase 0 — Conoscere e mettere in ordine: completata in sviluppo
 
@@ -30,11 +30,11 @@ Creare `/lab/`, con categorie, stato, descrizioni, tecnologie e collegamenti ver
 
 Avvio, verifiche, struttura e distinzione tra copia locale, GitHub e Aruba sono spiegati. Dopo la revisione della homepage, il proprietario ha autorizzato l'assistente a salvare e trasferire su GitHub le modifiche correnti. Il salvataggio comprende codice, guide e test; nessuna pubblicazione su Aruba è stata richiesta.
 
-## Fase 4 — Pubblicazione automatica: da progettare
+## Fase 4 — Pubblicazione automatica: implementata, da verificare sull'hosting reale
 
-Il workflow `.github/workflows/deploy.yml` è ora dedicato ai soli controlli statici, avviabili manualmente. Durante la sincronizzazione è stato rilevato un precedente workflow remoto che trasferiva file tramite FTP a ogni push: la versione aggiornata rimuove il trasferimento, così il salvataggio su GitHub non pubblica anche il sito.
+Su esplicita richiesta del proprietario, il workflow `.github/workflows/deploy.yml` è stato aggiornato per i push su `main` e per l'avvio manuale. Esegue test, prepara solo i file pubblici, verifica il collegamento FTPS, conserva il backup su GitHub prima del trasferimento, aggiorna l'HTML per ultimo e confronta il risultato HTTPS con la versione attesa. Non elimina file remoti estranei. Sono previste prove automatiche locali e ripristino dei file preesistenti in caso di errore di trasferimento.
 
-Prima di preparare il deploy occorre verificare nel pannello Aruba protocollo sicuro effettivamente disponibile, server e directory pubblica. Poi configurare avvio manuale o approvazione, segreti protetti, test, backup, soli file pubblici e nessuna cancellazione automatica. Non è stata provata una connessione all'hosting né avviato il workflow su GitHub.
+Restano da verificare il primo run GitHub, la presenza/validità dei Secrets esistenti, il supporto FTPS e la directory del vero hosting. Questa macchina non può ancora leggere API GitHub, guida Aruba o sito pubblico per il blocco della rete; sono state salvate le aggiunte necessarie alla configurazione dell'ambiente. La scelta dell'avvio automatico sostituisce per richiesta del proprietario il precedente piano di solo avvio manuale.
 
 ## Fase 5 — In seguito, solo quando serve
 

@@ -2,7 +2,7 @@
 
 - Procedere per piccoli passi spiegati in italiano semplice: il proprietario è principiante.
 - Il proprietario ha autorizzato commit e push delle modifiche correnti il 5 novembre 2026. Eseguirli nell'ambito richiesto, dopo i controlli, senza forzare il push. Per nuove attività seguire le autorizzazioni della relativa conversazione; merge e creazione di tag richiedono una richiesta specifica.
-- Non pubblicare né modificare Aruba senza autorizzazione esplicita.
+- Il proprietario ha autorizzato la pubblicazione automatica del sito su Aruba tramite push su main e la relativa configurazione. Il workflow deve verificare FTPS, conservare il backup prima delle scritture e pubblicare solo i file autorizzati. Nessuna cancellazione di file remoti estranei. Per interventi esterni a questo flusso serve una richiesta specifica.
 - Preservare la versione funzionante, l'identità grafica e i contenuti verificati.
 - Non inventare clienti, progetti, risultati, contatti o credenziali.
 - Mantenere il sito statico; introdurre dipendenze applicative, framework o servizi solo per necessità dimostrabili.

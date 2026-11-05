@@ -2,7 +2,7 @@
 
 Un sito per presentare cosa puoi costruire per le aziende. In seguito ospiterà anche un laboratorio di esperimenti. Si procede una fase alla volta: **la Fase 0 è completata; nella Fase 1 sono stati configurati il contatto email e il primo miglioramento della homepage**. Pagine progetto e laboratorio sono ancora da realizzare.
 
-La homepage mantiene colori crema e arancio, presenta esplicitamente i tre servizi e conserva una nota personale sugli studi e sulla curiosità di Simone. I paragrafi principali sono di circa 18 pixel; i testi secondari partono da 14 pixel. La disposizione si adatta a telefono e testo ingrandito. Le modifiche vengono salvate su GitHub tramite commit e push autorizzati; la pubblicazione su Aruba richiede un passaggio separato.
+La homepage mantiene colori crema e arancio, presenta esplicitamente i tre servizi e conserva una nota personale sugli studi e sulla curiosità di Simone. I paragrafi principali sono di circa 18 pixel; i testi secondari partono da 14 pixel. La disposizione si adatta a telefono e testo ingrandito. Il workflow di pubblicazione è ora configurato per i push su main, con test e backup prima del trasferimento. La verifica del primo caricamento sul vero hosting resta da completare.
 
 ## Da dove partire
 
@@ -17,7 +17,9 @@ Non devi leggere tutta la documentazione insieme. Comincia da questa pagina; [RO
 | `assets/favicon.svg` | Piccola icona della scheda del browser. |
 | `scripts/check_site.py` | Controllo automatico dei collegamenti interni e delle risorse. |
 | `tests/browser_smoke.py` | Prova delle funzioni principali in un browser automatico. |
-| `.github/workflows/deploy.yml` | Controlli statici ad avvio manuale su GitHub; nessun caricamento su Aruba. |
+| `.github/workflows/deploy.yml` | Test, backup e pubblicazione FTPS su Aruba quando arrivano commit su main. |
+| `scripts/deploy_site.py` | Prepara solo i file pubblici, salva il backup, pubblica e verifica la versione online. |
+| `requirements-test.txt` | Versioni degli strumenti di test; non va caricato sul sito. |
 
 ## Aprire il sito durante lo sviluppo
 
@@ -54,7 +56,7 @@ python3 tests/browser_smoke.py
 
 Il test avvia e arresta da solo un server temporaneo; non serve prima avviare la porta 8000. Richiede gli strumenti di test Playwright per Python e Chromium, già presenti in questa macchina. Non sono dipendenze del sito e non vanno caricati su Aruba. Su un altro computer, se mancano, puoi seguire intanto i controlli manuali in [CHECKLIST.md](CHECKLIST.md).
 
-Su GitHub è predisposto il workflow **Controlli manuali del sito**, nella sezione **Actions**. Con **Run workflow** si avviano il controllo dei collegamenti e della sintassi JavaScript. Il nome del file è ancora `deploy.yml`, ma il suo contenuto non trasferisce file su Aruba e non si avvia a ogni push. Non esegue i test browser: quelli restano un controllo distinto. Non è stato avviato su GitHub durante questa preparazione.
+Su GitHub è predisposto il workflow **Pubblica sito su Aruba**, nella sezione **Actions**. Si avvia con un push su `main`, oppure con **Run workflow**. Esegue controlli statici, test browser e prove locali del trasferimento; prepara i file pubblici, conserva il backup e li carica tramite FTPS. L'ultimo passo confronta homepage e risorse HTTPS con la versione attesa. Richiede i Secrets FTP già previsti nel vecchio tentativo: vedi [DEPLOYMENT.md](DEPLOYMENT.md). Non è stato ancora confermato il primo caricamento sul vero hosting.
 
 ## Contatti e progetti: situazione attuale
 
@@ -64,15 +66,15 @@ Il visitatore può cliccare sull'indirizzo oppure compilare il modulo. Il pulsan
 
 Se l'app di posta non si apre o non è configurata, il testo preparato resta disponibile da copiare; il destinatario è visibile nella pagina. La verifica automatica controlla i dati preparati, sostituendo soltanto l'apertura dell'app esterna con un registratore nel test. L'apertura reale della posta e la ricezione devono ancora essere provate su un dispositivo del proprietario. Il test controlla anche che senza email configurata torni disponibile la sola preparazione del testo.
 
-La configurazione del contatto viene versionata insieme al sito. Il salvataggio su GitHub non la pubblica automaticamente su Aruba.
+La configurazione del contatto viene versionata insieme al sito. Con il nuovo workflow, un push su `main` avvia anche la pubblicazione su Aruba, se test, backup e accesso riescono.
 
 Per aggiungere un progetto verificato, gli attuali campi supportati sono `titolo`, `tipo`, `descrizione`, `url` e `immagine` (facoltativa, un percorso sotto `assets/`). La lista `progetti` contiene un oggetto per ogni lavoro. Nella Fase 1 prepareremo insieme il primo inserimento e distingueremo lavori reali ed esperimenti. Non occorre compilare schede inventate adesso.
 
 ## Come conserviamo le versioni
 
-Git registra la storia del progetto; GitHub ne conserva una copia online. Un **commit** è un punto salvato nella storia; un **push** trasferisce i commit a GitHub. Nessuna di queste operazioni pubblica automaticamente su Aruba nella configurazione attuale.
+Git registra la storia del progetto; GitHub ne conserva una copia online. Un **commit** è un punto salvato nella storia; un **push** trasferisce i commit a GitHub. Il push su `main` avvia il nuovo workflow di pubblicazione. Un commit rimasto soltanto sul computer non aggiorna il sito.
 
-Il 5 novembre 2026 hai autorizzato l'assistente a eseguire commit e push delle modifiche correnti dopo la verifica. Per le attività successive si seguiranno le tue indicazioni; merge, tag e pubblicazione su Aruba richiedono una richiesta specifica. Per vedere le modifiche prima di salvarle nella storia:
+Il 5 novembre 2026 hai autorizzato l'assistente a eseguire commit e push delle modifiche correnti e successivamente hai richiesto la pubblicazione automatica su Aruba. Per le attività successive si seguiranno le tue indicazioni; merge e tag richiedono una richiesta specifica. Per vedere le modifiche prima di salvarle nella storia:
 
 ```sh
 git status --short
