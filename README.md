@@ -1,92 +1,87 @@
 # Il sito di Simone Vacca
 
-Un sito per presentare cosa puoi costruire per le aziende. In seguito ospiterà anche un laboratorio di esperimenti. Si procede una fase alla volta: **la Fase 0 è completata; nella Fase 1 sono stati configurati il contatto email e il primo miglioramento della homepage**. Pagine progetto e laboratorio sono ancora da realizzare.
+> Aggiornamento operativo — 6 novembre 2026: dopo la spiegazione delle modifiche, il proprietario ha autorizzato un commit e il caricamento su GitHub. Le indicazioni precedenti di divieto di commit/push descrivono la fase del 5 novembre e sono superate per questo caricamento. La pubblicazione su Aruba resta separata e non viene eseguita. L’esito del push verrà verificato sul remoto; questo documento non ne anticipa il successo.
 
-La homepage mantiene colori crema e arancio, presenta esplicitamente i tre servizi e conserva una nota personale sugli studi e sulla curiosità di Simone. I paragrafi principali sono di circa 18 pixel; i testi secondari partono da 14 pixel. La disposizione si adatta a telefono e testo ingrandito. Il workflow di pubblicazione è ora configurato per i push su main, con test e backup prima del trasferimento. La verifica del primo caricamento sul vero hosting resta da completare.
+Portfolio commerciale e laboratorio statico: homepage, servizi, chi sono, tre progetti dimostrativi con approfondimenti, due esperimenti, strumenti e demo turni. **Queste modifiche sono locali. Non sono stati eseguiti commit, push o deployment per il nuovo master prompt.**
 
-## Da dove partire
+Il sito mantiene carta, nero, arancione e monogramma s/v. Non usa framework, database, servizi a pagamento o librerie esterne nel browser. Python serve solo in sviluppo per generare pagine e fare verifiche.
 
-Non devi leggere tutta la documentazione insieme. Comincia da questa pagina; [ROADMAP.md](ROADMAP.md) indica il passo successivo. Il sito usa HTML, CSS e JavaScript, senza installazioni di pacchetti, database o compilazione.
+## Primo passo: aprire il sito
 
-| File | A cosa serve |
-| --- | --- |
-| `index.html` | Testi e struttura della pagina principale. |
-| `style.css` | Colori, caratteri e disposizione degli elementi. |
-| `app.js` | Scenari interattivi, calcolatore, modulo e visualizzazione progetti. |
-| `contenuti.js` | Email pubblica e lista dei progetti da mostrare. |
-| `assets/favicon.svg` | Piccola icona della scheda del browser. |
-| `scripts/check_site.py` | Controllo automatico dei collegamenti interni e delle risorse. |
-| `tests/browser_smoke.py` | Prova delle funzioni principali in un browser automatico. |
-| `.github/workflows/deploy.yml` | Test, backup e pubblicazione FTPS su Aruba quando arrivano commit su main. |
-| `scripts/deploy_site.py` | Prepara solo i file pubblici, salva il backup, pubblica e verifica la versione online. |
-| `requirements-test.txt` | Versioni degli strumenti di test; non va caricato sul sito. |
-
-## Aprire il sito durante lo sviluppo
-
-Nell'ambiente cloud Python 3 e Node.js sono già disponibili. Python avvia un piccolo server: un programma che consegna i file al browser. Node.js serve soltanto a controllare la sintassi JavaScript; non è necessario al sito su Aruba.
-
-Nel terminale, cioè la finestra in cui si scrivono i comandi, esegui:
+Dalla cartella del progetto, nel terminale:
 
 ```sh
-cd /workspace/website-project
+python3 scripts/build_pages.py
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Il comando resta attivo: è normale. Per fermarlo premi **Ctrl+C** nello stesso terminale. Su un tuo computer sostituisci il percorso con la cartella del progetto; il sito sarà visibile nel browser all'indirizzo locale indicato dal server, porta 8000. Nell'interfaccia cloud di onboarding i link di anteprima locali non sono supportati: qui le verifiche avvengono internamente.
+Il primo comando aggiorna le pagine locali. Il secondo avvia un server: sul tuo computer apri `http://127.0.0.1:8000`. Il terminale resta occupato finché premi Ctrl+C. Nell'ambiente cloud il browser viene usato internamente per i test; non presumere che il link locale sia raggiungibile dal tuo computer.
 
-Questa copia di sviluppo non modifica il sito pubblicato su Aruba.
+Questo server espone anche documenti interni: usalo solo in locale. Per l'hosting si prepara una cartella separata con soli file pubblici.
 
-## Controllare che funzioni
+## Cosa puoi aprire
 
-In un secondo terminale, nella cartella del progetto:
+| Percorso | Funzione |
+| --- | --- |
+| `/` | Servizi in sintesi, scenari, calcolatore completo, metodo, FAQ e contatti. |
+| `/servizi/`, `/chi-sono/` | Proposta professionale e presentazione personale verificata. |
+| `/progetti/` | Catalogo generato da schede, con tre approfondimenti. |
+| `/lab/` | Catalogo degli esperimenti personali. |
+| `/lab/elenchi/` | Pulizia di righe duplicate, già presente e conservata. |
+| `/lab/percorso/` | Visualizzazione BFS e Dijkstra con ostacoli e terreno pesato. |
+| `/strumenti/` | Accesso al calcolatore esistente e alla checklist. |
+| `/strumenti/checklist/` | Autovalutazione del sito con report copiabile/scaricabile. |
+| `/demo/` | Turni e copertura di un'attività immaginaria. |
+
+Il calcolatore rimane **uno solo**, nella homepage. Le altre pagine lo collegano. I contatti rimangono nella sezione `/#contatti` per evitare duplicazioni.
+
+## Dove modificare
+
+- `index.html`, `app.js`, `style.css`: homepage, comportamenti e stile condiviso. La navigazione e i metadati nei blocchi marcati sono aggiornati dal generatore.
+- `contenuti.js`: email pubblica configurabile, attualmente `simone.vacca@edu.unito.it`. Dopo averla modificata, rigenera le pagine per aggiornare anche il recapito senza JavaScript.
+- `content/progetti/*.json`: schede autentiche da trasformare in pagine.
+- `templates/`: contenuti e layout delle nuove pagine; **modifica qui**, non negli HTML generati.
+- `lab/`, `strumenti/`, `demo/`: JavaScript indipendente per ogni applicazione.
+- `scripts/build_pages.py`: generatore senza dipendenze; aggiorna anche sitemap e lista pubblica.
+
+La pagina “Chi sono” usa i fatti forniti dal proprietario. Nessuna fotografia, esperienza di lavoro o sede è stata inventata. Vedi [CONTENT-GUIDE.md](CONTENT-GUIDE.md) per aggiungere contenuti passo passo.
+
+## Controlli rapidi
 
 ```sh
+python3 scripts/build_pages.py --check
 python3 scripts/check_site.py
-node --check app.js
-node --check contenuti.js
+python3 scripts/check_js.py
+node tests/algorithms.test.js
+node tests/efficiency.test.js
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Il primo comando segnala file o destinazioni interne mancanti. Gli altri cercano errori di scrittura nel JavaScript: nessun messaggio e codice di uscita 0 significano che la sintassi è valida. Questi controlli da soli non provano le interazioni.
-
-Nell'ambiente cloud è disponibile anche una prova automatica con Chromium:
+Per le prove complete installa gli strumenti **solo nell'ambiente di sviluppo**:
 
 ```sh
-python3 tests/browser_smoke.py
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements-test.txt
+python3 -m playwright install chromium
+USE_PLAYWRIGHT_BROWSER=1 python3 tests/browser_smoke.py
+USE_PLAYWRIGHT_BROWSER=1 python3 tests/lab_smoke.py
+USE_PLAYWRIGHT_BROWSER=1 python3 tests/platform_smoke.py
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Il test avvia e arresta da solo un server temporaneo; non serve prima avviare la porta 8000. Richiede gli strumenti di test Playwright per Python e Chromium, già presenti in questa macchina. Non sono dipendenze del sito e non vanno caricati su Aruba. Su un altro computer, se mancano, puoi seguire intanto i controlli manuali in [CHECKLIST.md](CHECKLIST.md).
+I test avviano e arrestano server temporanei locali. Senza pyftpdlib e pyOpenSSL le tre prove FTPS vengono saltate: leggere l'output, non considerarle superate. In questa macchina i pacchetti FTPS già disponibili sono sotto `/tmp/aruba-ftps-tests`; `PYTHONPATH=/tmp/aruba-ftps-tests` permette di usarli. Chromium di sistema viene usato omettendo `USE_PLAYWRIGHT_BROWSER`.
 
-Su GitHub è predisposto il workflow **Pubblica sito su Aruba**, nella sezione **Actions**. Si avvia con un push su `main`, oppure con **Run workflow**. Esegue controlli statici, test browser e prove locali del trasferimento; prepara i file pubblici, conserva il backup e li carica tramite FTPS. L'ultimo passo confronta homepage e risorse HTTPS con la versione attesa. Richiede i Secrets FTP già previsti nel vecchio tentativo: vedi [DEPLOYMENT.md](DEPLOYMENT.md). Non è stato ancora confermato il primo caricamento sul vero hosting.
+## Contatti e dati
 
-## Contatti e progetti: situazione attuale
+Il modulo prepara una bozza **mailto**: il visitatore deve inviare dall'app di posta. La copia manuale resta disponibile. Non c'è invio dal server, raccolta lead o password email. Senza JavaScript il modulo è disabilitato e il recapito resta leggibile. Invio e ricezione reali devono essere provati dal proprietario.
 
-In `contenuti.js` l'email pubblica è `simone.vacca@edu.unito.it`, scelta dal proprietario. La lista progetti è ancora vuota, quindi la sezione progetti resta nascosta.
+Demo e strumenti elaborano dati nella pagina senza cookie applicativi, salvataggi o richieste esterne. Questo descrive il codice del sito: non è una certificazione legale o una verifica dei log Aruba.
 
-Il visitatore può cliccare sull'indirizzo oppure compilare il modulo. Il pulsante prepara un collegamento `mailto`: chiede al dispositivo di aprire l'app di posta con destinatario, oggetto e messaggio già compilati. Il visitatore controlla la bozza e preme **Invia** nella propria app. Il sito non spedisce email dal server e non usa la password della tua casella.
+## Pubblicazione
 
-Se l'app di posta non si apre o non è configurata, il testo preparato resta disponibile da copiare; il destinatario è visibile nella pagina. La verifica automatica controlla i dati preparati, sostituendo soltanto l'apertura dell'app esterna con un registratore nel test. L'apertura reale della posta e la ricezione devono ancora essere provate su un dispositivo del proprietario. Il test controlla anche che senza email configurata torni disponibile la sola preparazione del testo.
+Il nuovo documento richiede che sia il proprietario a fare commit/push e che il deploy sia manuale. Il workflow preparato avvia per impostazione predefinita soltanto test e pacchetto; il trasferimento richiede la scelta esplicita `publish`. Nessun push avvia automaticamente la pubblicazione nella configurazione locale attuale.
 
-La configurazione del contatto viene versionata insieme al sito. Con il nuovo workflow, un push su `main` avvia anche la pubblicazione su Aruba, se test, backup e accesso riescono.
+Protocollo, directory e accesso Aruba devono ancora essere verificati prima dell'attivazione. Il precedente errore remoto `commit_refs_rules` non è stato risolto né ritentato. Non sono stati contattati servizi di produzione in questo intervento.
 
-Per aggiungere un progetto verificato, gli attuali campi supportati sono `titolo`, `tipo`, `descrizione`, `url` e `immagine` (facoltativa, un percorso sotto `assets/`). La lista `progetti` contiene un oggetto per ogni lavoro. Nella Fase 1 prepareremo insieme il primo inserimento e distingueremo lavori reali ed esperimenti. Non occorre compilare schede inventate adesso.
-
-## Come conserviamo le versioni
-
-Git registra la storia del progetto; GitHub ne conserva una copia online. Un **commit** è un punto salvato nella storia; un **push** trasferisce i commit a GitHub. Il push su `main` avvia il nuovo workflow di pubblicazione. Un commit rimasto soltanto sul computer non aggiorna il sito.
-
-Il 5 novembre 2026 hai autorizzato l'assistente a eseguire commit e push delle modifiche correnti e successivamente hai richiesto la pubblicazione automatica su Aruba. Per le attività successive si seguiranno le tue indicazioni; merge e tag richiedono una richiesta specifica. Per vedere le modifiche prima di salvarle nella storia:
-
-```sh
-git status --short
-git diff
-```
-
-`git diff` mostra le differenze dei file già tracciati; i file nuovi vanno aperti e letti a parte. Prima di tornare a una versione precedente, salva una copia del lavoro attuale fuori dalla cartella pubblica. Guarda `git log --oneline` per individuare la versione e ripristina solo i file necessari con assistenza: non usare comandi che cancellano tutto. Per il ripristino del sito online segui [DEPLOYMENT.md](DEPLOYMENT.md).
-
-## Le altre guide
-
-- [AUDIT.md](AUDIT.md): cosa è stato verificato e quali problemi restano.
-- [ARCHITECTURE.md](ARCHITECTURE.md): come sono collegati i file e come potrà crescere il sito.
-- [ROADMAP.md](ROADMAP.md): fasi future, chiaramente separate dal lavoro fatto.
-- [CHECKLIST.md](CHECKLIST.md): verifiche prima di una pubblicazione.
-- [DEPLOYMENT.md](DEPLOYMENT.md): pubblicazione, backup e ripristino su Aruba.
+Leggi [DEPLOYMENT.md](DEPLOYMENT.md) per credenziali, backup e ripristino. [PROGRESS.md](PROGRESS.md) riporta stato e prove; [AUDIT.md](AUDIT.md) contiene evidenze e limiti; [ROADMAP.md](ROADMAP.md) distingue ciò che esiste dalle idee future.

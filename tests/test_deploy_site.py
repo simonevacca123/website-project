@@ -123,6 +123,17 @@ class DeploymentTests(unittest.TestCase):
         with self.assertRaises(deploy.DeployError):
             deploy.build_release(self.source, self.output, 'a' * 40)
 
+    def test_lab_publication_is_explicit_and_complete(self):
+        (self.source / 'lab').mkdir()
+        (self.source / 'lab/index.html').write_text('<html>Laboratorio</html>')
+        with self.assertRaises(deploy.DeployError):
+            deploy.build_release(self.source, self.output, 'a' * 40)
+        (self.source / 'lab/lab.js').write_text('console.log("lab");')
+        (self.source / 'lab/private.txt').write_text('internal notes')
+        manifest = deploy.build_release(self.source, self.output, 'a' * 40)
+        self.assertTrue(set(deploy.LAB_FILES).issubset(manifest['files']))
+        self.assertNotIn('lab/private.txt', manifest['files'])
+
     def test_path_traversal_and_private_paths_rejected(self):
         for name in ['../index.html', '/index.html', 'assets/../.env', 'assets/secret.pem', 'README.md', 'assets/a\n.svg']:
             with self.subTest(name=name), self.assertRaises(deploy.DeployError):

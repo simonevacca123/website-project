@@ -1,0 +1,13 @@
+{
+  "slug": "elenchi", "pubblicato": true, "titolo": "Un elenco, senza doppioni", "tipo": "Demo personale", "categoria": "Automation", "stato": "Demo funzionante", "lab": true,
+  "descrizione": "Un piccolo strumento per ripulire un elenco mantenendo l'ordine delle voci.",
+  "tecnologie": ["HTML", "CSS", "JavaScript", "Set"], "demo": "/lab/elenchi/",
+  "contesto": "Un esercizio personale su un'attività ricorrente: confrontare righe di testo. Non nasce da una commessa e non usa dati di clienti.",
+  "problema": "Controllare a mano un elenco per trovare voci identiche richiede attenzione e può lasciare doppioni.",
+  "obiettivi": "Conservare la prima occorrenza di ogni voce e rendere chiaro cosa viene confrontato.",
+  "soluzione": "Le righe vengono ripulite dagli spazi ai bordi, normalizzate in Unicode e confrontate con un insieme di valori già incontrati.",
+  "interfaccia": "Un campo per l'elenco, un esempio pronto, il controllo delle maiuscole e un risultato copiabile con conteggi.",
+  "scelte": "Elaborazione nel browser senza dipendenze. Set evita ricerche ripetute nell'intero elenco; nessun invio a servizi esterni.",
+  "compromessi": "Non riconosce sinonimi, errori di battitura o persone con nomi simili. Limite di 500 righe e 20.000 caratteri.",
+  "risultati": "Nell'esempio incluso, cinque righe diventano tre voci uniche. Il comportamento è ripetibile nella demo; non è una misura di produttività aziendale."
+}

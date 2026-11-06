@@ -1,94 +1,73 @@
-# Pubblicazione automatica su Aruba
+# Pubblicazione predisposta, non avviata
 
-Il proprietario ha richiesto e autorizzato la pubblicazione automatica dei commit che arrivano sul ramo `main` di GitHub. Il workflow è [.github/workflows/deploy.yml](.github/workflows/deploy.yml), chiamato **Pubblica sito su Aruba**. È disponibile anche l'avvio manuale dalla scheda Actions.
+> Aggiornamento operativo — 6 novembre 2026: dopo la spiegazione delle modifiche, il proprietario ha autorizzato un commit e il caricamento su GitHub. Le indicazioni precedenti di divieto di commit/push descrivono la fase del 5 novembre e sono superate per questo caricamento. La pubblicazione su Aruba resta separata e non viene eseguita. L’esito del push verrà verificato sul remoto; questo documento non ne anticipa il successo.
 
-**Stato della verifica:** implementazione e test locali completati; accesso ai Secrets, ai log GitHub e al sito Aruba non verificato da questa macchina a causa del blocco di rete. Non confondere i test con un trasferimento riuscito sul vero hosting. I risultati del primo run GitHub devono ancora essere controllati.
+Il nuovo master prompt richiede **nessun commit, push o deploy da parte dell'assistente**. Sostituisce la precedente richiesta di automatismo su ogni push. Il workflow locale `.github/workflows/deploy.yml` ora ha solo `workflow_dispatch`, cioè avvio manuale.
 
-## Come funzionerà nell'uso quotidiano
+**Non è stata verificata una connessione al vero Aruba.** FTPS esplicito è il protocollo implementato e provato su server locali; il supporto del piano, server, certificato e directory effettivi devono essere confermati prima di attivarlo. Non sono stati modificati DNS o credenziali.
 
-1. Modifichi il sito e invii i commit a `main` con un push. Se modifichi un file direttamente su GitHub e salvi su `main`, GitHub genera già questo evento.
-2. GitHub avvia un computer temporaneo che controlla collegamenti, sintassi, homepage, trasferimento FTPS e backup usando server locali di prova.
-3. Prepara una cartella con soli file pubblici.
-4. Si collega all'hosting tramite **FTPS esplicito**, con TLS verificato e dati cifrati, sulla porta 21 salvo configurazione diversa.
-5. Identifica la cartella del sito, legge tutti i file da sostituire e conserva un backup come artefatto GitHub per 30 giorni. Se la lettura o il salvataggio del backup falliscono, non carica nulla.
-6. Controlla che il sito non sia cambiato dopo il backup, carica i file diversi e ne verifica il contenuto. L'HTML viene aggiornato per ultimo.
-7. Controlla via HTTPS che la homepage e le risorse pubbliche corrispondano alla versione caricata.
+## Flusso da usare dopo la revisione
 
-Un commit rimasto soltanto sul tuo computer non aggiorna il sito: deve arrivare a GitHub. Se un controllo fallisce, il run diventa rosso e il passo indica dove intervenire. I dati del modulo non vengono inviati da questo workflow.
+Mac / ambiente Codex → modifiche locali → generazione → test → commit e push eseguiti dal proprietario → GitHub Actions manuale → Aruba, solo quando autorizzato.
 
-## Dati su GitHub: riutilizziamo i nomi già previsti
+1. Esegui i controlli in README e rivedi i file pubblici.
+2. Salva e trasferisci tu le versioni con Git. Questo intervento non ha eseguito tali operazioni. Il precedente rifiuto `fatal error in commit_refs_rules` resta non diagnosticato; non forzare il push.
+3. Quando il workflow sarà su GitHub, apri **Actions → Pubblica sito su Aruba → Run workflow**.
+4. Lascia `publish` disattivato per test e creazione dell'artefatto `sito-da-revisionare`. Non vengono usati i Secrets e non parte alcuna connessione Aruba.
+5. Solo dopo aver verificato i dati hosting e autorizzato il caricamento, scegli `main` e attiva `publish`. Un altro ramo non può pubblicare.
+6. Prima di trasferire, il workflow esegue tutti i test e prepara il pacchetto; individua la directory, legge i file da sostituire e conserva il backup GitHub per 30 giorni. Se il backup o il suo caricamento come artefatto fallisce, la pubblicazione si ferma.
+7. Carica soltanto i file modificati, verifica gli hash e controlla il sito HTTPS. La homepage viene caricata per ultima.
 
-Apri il repository → **Settings → Secrets and variables → Actions**. Nella scheda **Secrets** i nomi previsti sono:
+Nessun workflow è stato eseguito su GitHub in questa fase. Il comportamento descritto è quello della configurazione preparata localmente.
 
-| Nome | Contenuto |
+## Secrets nell'interfaccia ufficiale
+
+Repository GitHub → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Valore da prendere dal pannello Aruba |
 | --- | --- |
-| `FTP_SERVER` | Nome del server FTP indicato da Aruba, senza `ftp://`, porta o cartella. Deve corrispondere al certificato TLS. |
-| `FTP_USERNAME` | Utente FTP dell'hosting. Non coincide necessariamente con l'email pubblica del sito. |
-| `FTP_PASSWORD` | Password FTP, inserita soltanto nell'interfaccia protetta dei Secrets. |
+| `FTP_SERVER` | Hostname del servizio FTPS, senza protocollo, porta o directory; deve corrispondere al certificato. |
+| `FTP_USERNAME` | Utente dell'accesso hosting. |
+| `FTP_PASSWORD` | Password FTPS. |
 
-Se i nomi esistono già, non crearne copie. Da questa macchina non è stato possibile verificarne la presenza o validità. Il vecchio workflow utilizzava gli stessi tre nomi. Non inviare password in chat e non inserirle nel repository.
+Non incollare password in questa chat, nei file, nelle variabili pubbliche o nei comandi salvati. Riutilizza i nomi esistenti se già configurati; la loro presenza/validità non è stata verificata qui.
 
-Nella scheda **Variables** puoi impostare:
+Nella scheda **Variables**, `FTP_SERVER_DIR` è il percorso pubblico esatto; `FTP_PORT` è la porta FTPS se diversa da 21. Per compatibilità il percorso può essere un Secret. I percorsi non sono credenziali, ma devono provenire dal pannello: non inventarli.
 
-| Nome | Quando serve |
-| --- | --- |
-| `FTP_SERVER_DIR` | Percorso esatto della cartella pubblica indicato da Aruba. È consigliato. Se assente, lo script cerca solo la directory di accesso e quelle del dominio `simonevacca.it` / `www.simonevacca.it`, accettando un unico sito riconoscibile come Simone Vacca. Se non è univoco, si ferma. |
-| `FTP_PORT` | Solo se Aruba richiede una porta diversa da 21 per FTPS esplicito. |
+Se la directory non è configurata, lo script cerca la directory di login e quelle del dominio, accettando un unico sito riconoscibile come Simone Vacca. In caso di ambiguità si ferma. Prima del primo deploy è preferibile confermare la directory esatta con il pannello o il supporto Aruba.
 
-Per compatibilità, `FTP_SERVER_DIR` può anche essere un Secret: una Variable con lo stesso nome ha precedenza. Nessun percorso viene inventato in caso di dubbio.
+Se l'hosting supporta soltanto SFTP, il codice va adattato con verifica della chiave host. Non usare FTP non cifrato e non disabilitare la verifica del certificato per aggirare un errore. Verificare anche eventuali restrizioni IP verso runner GitHub e la precedenza di un eventuale `index.php`.
 
-Il workflow verifica l'hosting attraverso la connessione reale prima di qualsiasi scrittura. Non è stato ancora accertato da questa macchina che il tuo specifico accesso supporti FTPS esplicito o consenta connessioni dai runner GitHub. Se il pannello indica solo SFTP o restrizioni sull'accesso FTP, occorre adattare la connessione ai dati reali; non si ripiega sul trasferimento non cifrato e non si disattiva la verifica del certificato.
+## Che cosa finisce sul server
 
-## File pubblicati
+`python3 scripts/deploy_site.py build` prepara `dist/site/`: quattro file base, asset consentiti e i file elencati in `scripts/public-files.json`. L'elenco è prodotto dal generatore e va rivisto quando si aggiungono pagine. Non vengono copiati `content/`, `templates/`, script interni, documenti, test, `.git`, `.github`, backup o file segreti.
 
-Attualmente il pacchetto contiene cinque file:
+Per una prova locale, `DEPLOY_REVISION` deve essere lo SHA completo di un commit esistente. Lo SHA identifica la base; **non dimostra che modifiche locali non committate siano su GitHub**. Gli hash nel manifest descrivono i byte effettivamente confezionati. Nel workflow viene usato `github.sha`.
 
-```text
-index.html
-style.css
-app.js
-contenuti.js
-assets/favicon.svg
-```
+Prima di caricare, controllare i collegamenti anche servendo `dist/site/`, perché questa è la cartella che verrà pubblicata. Il server di sviluppo della root espone documenti interni e non deve essere usato come root del sito online.
 
-Lo script include gli altri file multimediali autorizzati sotto `assets/` quando vengono aggiunti. Rifiuta link simbolici, percorsi nascosti e tipi non previsti. Non trasferisce `.git`, `.github`, documenti, script, test, requisiti di test, backup o credenziali.
+Non c'è sincronizzazione distruttiva. Nessun file remoto estraneo o obsoleto viene cancellato; sono rimossi solo i file temporanei dello stesso trasferimento. Una scheda diventata bozza non rimuove automaticamente una sua precedente pagina online: il ritiro va autorizzato e gestito separatamente.
 
-Le pagine future come `/progetti/` e `/lab/` richiederanno un aggiornamento esplicito dell'elenco pubblico in `scripts/deploy_site.py`. Non basta creare una cartella per pubblicarla.
+## Backup e rollback
 
-Non c'è sincronizzazione distruttiva: non vengono eliminati file remoti estranei o vecchi asset. Vengono rimossi soltanto i file temporanei creati dallo stesso caricamento.
+L'artefatto `aruba-backup-<run>-<tentativo>` contiene i file preesistenti da sostituire e il manifest. Scaricarlo in una posizione privata se deve durare oltre i 30 giorni; non metterlo nella cartella pubblica. Non include una copia completa di file estranei al sito: per un backup totale usare le funzioni hosting appropriate.
 
-## Leggere il risultato
+Se un upload fallisce, lo script tenta di ripristinare i file preesistenti già coinvolti. Un guasto della connessione può impedire il rollback: resta l'artefatto. I file nuovi non sono cancellati.
 
-Apri **Actions → Pubblica sito su Aruba → ultimo run**:
+Con assistenza e autorizzazione, `python3 scripts/deploy_site.py restore --backup <cartella-backup>` ripristina i file di un artefatto integro, usando credenziali fornite tramite un canale sicuro. Non è un comando da provare sul server reale per esercizio.
 
-- Verde: tutti i passi, inclusa la verifica HTTPS della homepage, sono riusciti.
-- Rosso al controllo Secrets: manca uno dei tre valori o un nome è errato.
-- Errore FTPS: verificare server ufficiale, accesso, password, porta, certificato e restrizioni dal pannello Aruba.
-- Cartella non identificabile: impostare `FTP_SERVER_DIR` con il percorso esatto.
-- Backup non salvato: il caricamento non parte.
-- Verifica HTTPS fallita: distinguere file trasferiti correttamente via FTPS da directory non pubblica, precedenza di un eventuale `index.php`, dominio o cache. Questo errore non avvia automaticamente un ripristino, perché una cache non dimostra un guasto del codice.
+Un'altra possibilità è ripristinare localmente i file di una versione nota, verificarli, salvare un nuovo commit a cura del proprietario e avviare manualmente un nuovo deploy. Non occorre cancellare la storia Git.
 
-Le credenziali non vengono mostrate nei log. Non modificare contemporaneamente gli stessi file via FTP durante un deploy.
+La rinomina è atomica per singolo file, non per tutto il sito: durante il caricamento possono convivere versioni diverse. La verifica HTTPS fallita non esegue rollback automatico: prima distinguere cache, directory sbagliata e file inattesi. Il trasferimento non garantisce downtime zero.
 
-## Backup e ripristino
+## Leggere gli errori
 
-Nella pagina del run, sotto **Artifacts**, scarica `aruba-backup-<numero-run>-<tentativo>`. Conserva una copia fuori dalla cartella pubblica se ti serve oltre i 30 giorni.
+- Test rosso: correggere codice o ambiente prima di toccare Aruba.
+- Credenziali rifiutate: ricontrollare Secrets e account nel pannello, senza stampare valori.
+- Certificato o protocollo non supportato: chiedere i dati ufficiali Aruba, mantenendo TLS verificato.
+- Directory ambigua o sito estraneo: fermarsi e verificare `FTP_SERVER_DIR`.
+- Backup fallito: nessun upload deve partire.
+- Hash cambiato dopo il backup: un altro processo ha modificato il file; evitare scritture concorrenti.
+- HTTPS diverso dal pacchetto: controllare URL pubblico, cache e directory prima di annunciare un successo.
 
-Se un trasferimento si interrompe, lo script tenta subito il ripristino dei file preesistenti coinvolti usando la stessa connessione. Se il server non risponde più, il ripristino può fallire: il backup già conservato resta disponibile. I file nuovi non vengono eliminati automaticamente.
-
-Per tornare a una versione del codice già conosciuta, si possono ripristinare soltanto i file pubblici da un commit precedente, controllarli e creare un nuovo commit su `main`, mantenendo il workflow attuale. Questo produce un nuovo deploy con un altro backup.
-
-È disponibile anche un ripristino tecnico da un artefatto integro con `python3 scripts/deploy_site.py restore --backup <cartella-backup>`, in un contesto con i Secrets FTP forniti in modo sicuro. Questa operazione richiede il backup del server corretto; non serve per l'uso quotidiano e va eseguita con assistenza.
-
-Il trasferimento è atomico per singolo file tramite nome temporaneo e rinomina. L'intero sito non cambia in un solo istante: durante un caricamento possono coesistere file di due versioni. Non si promette un deploy atomico completo su un hosting FTP.
-
-## Provare il sistema senza toccare Aruba
-
-Gli strumenti elencati in `requirements-test.txt` servono solo allo sviluppo. In un ambiente dove sono installati:
-
-```sh
-python3 -m unittest discover -s tests -p 'test_deploy_*.py' -v
-python3 tests/browser_smoke.py
-```
-
-Le prove del trasferimento usano un server FTPS locale con certificato di test esplicitamente attendibile; verificano anche il rifiuto di un certificato non attendibile. Le prove HTTPS confrontano homepage e risorse e rilevano una versione online diversa. I test non usano le credenziali Aruba.
+Le prove automatiche locali usano certificati di test e credenziali sintetiche temporanee. Non provano il funzionamento del vero hosting.

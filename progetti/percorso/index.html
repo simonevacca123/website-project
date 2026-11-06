@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Una mappa, due algoritmi — Progetto di Simone Vacca</title>
+  <meta name="description" content="Una griglia interattiva per confrontare ricerca in ampiezza e ricerca a costo minimo.">
+  <meta name="theme-color" content="#f4f2ec">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="canonical" href="https://www.simonevacca.it/progetti/percorso/">
+<meta property="og:type" content="website"><meta property="og:locale" content="it_IT"><meta property="og:site_name" content="Simone Vacca"><meta property="og:title" content="Una mappa, due algoritmi — Progetto di Simone Vacca"><meta property="og:description" content="Una griglia interattiva per confrontare ricerca in ampiezza e ricerca a costo minimo."><meta property="og:url" content="https://www.simonevacca.it/progetti/percorso/">
+
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <header class="wrap header"><a class="brand" href="../../" aria-label="Simone Vacca, homepage"><span class="brand-symbol">s/v</span><span>Simone<br>Vacca</span></a><nav aria-label="Navigazione principale"><a href="../../servizi/">Servizi</a><a href="../../progetti/">Progetti</a><a href="../../lab/">Laboratorio</a><a href="../../strumenti/">Strumenti</a><a href="../../chi-sono/">Chi sono</a></nav><a class="header-cta" href="../../#contatti">Parliamone</a></header>
+  <main id="main"><section class="wrap page-intro"><a class="text-link" href="../">Tutti i progetti</a><p class="eyebrow">Demo personale / Demo funzionante</p><h1>Una mappa, due algoritmi</h1><p class="lead">Una griglia interattiva per confrontare ricerca in ampiezza e ricerca a costo minimo.</p><div class="controls"><a class="text-link" href="../../lab/percorso/">Prova la demo</a></div></section><div class="wrap"><p class="tag-line">JavaScript · BFS · Dijkstra</p></div><section class="wrap editorial-list"><article><h2>Il contesto</h2><p>Un esperimento didattico personale per rendere visibile come un algoritmo esplora una mappa.</p></article><article><h2>Il problema</h2><p>Un percorso con pochi passi non è sempre quello meno costoso se il terreno cambia.</p></article><article><h2>Gli obiettivi</h2><p>Confrontare due algoritmi corretti, con ostacoli e costi modificabili, mostrando la ricerca passo passo.</p></article><article><h2>La soluzione</h2><p>BFS usa una coda; Dijkstra mantiene distanze e predecessori e sceglie il minimo fra le celle in attesa.</p></article><article><h2>L'interfaccia</h2><p>Griglia con partenza, arrivo e ostacoli. Controlli per pausa, singolo passo, ripristino e navigazione tramite frecce.</p></article><article><h2>Scelte tecniche</h2><p>Logica pura separata dalla visualizzazione e testabile senza browser. Mappa limitata a 96 celle per una lettura comprensibile.</p></article><article><h2>Difficoltà e limiti</h2><p>Quattro direzioni, costi positivi e nessun ostacolo in movimento. Dijkstra usa una selezione lineare, adatta a questa scala ma non a mappe enormi.</p></article><article><h2>Risultati osservabili</h2><p>Il caso di terreno lento mostra perché BFS può scegliere meno passi e Dijkstra un costo minore. La demo espone entrambi i valori e gestisce le mappe senza percorso.</p></article></section><section class="wrap closing-note"><h2>Un problema simile?</h2><a class="button" href="../../#contatti">Raccontamelo</a></section></main>
+  <footer class="wrap"><a class="brand" href="../../"><span class="brand-symbol">s/v</span><span>Simone<br>Vacca</span></a><p>Curiosità, codice e problemi concreti.</p><a href="../../#contatti">Parliamo del tuo progetto</a></footer>
+</body>
+</html>

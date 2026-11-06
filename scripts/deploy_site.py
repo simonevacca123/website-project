@@ -24,6 +24,8 @@ from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_FILES = ('index.html', 'style.css', 'app.js', 'contenuti.js')
+LAB_FILES = ('lab/index.html', 'lab/lab.js')
+EXTRA_FILES = tuple(json.loads((ROOT / 'scripts/public-files.json').read_text()))
 ASSET_TYPES = {'.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.ico', '.woff', '.woff2'}
 MAX_FILE_SIZE = 32 * 1024 * 1024
 
@@ -42,7 +44,7 @@ def public_path(name):
             or any(part.startswith('.') for part in path.parts)
             or any(c in name for c in '\r\n\\') or path.as_posix() != name):
         raise DeployError('Percorso non consentito nel pacchetto pubblico.')
-    if name not in PUBLIC_FILES and not (
+    if name not in PUBLIC_FILES + LAB_FILES + EXTRA_FILES and not (
             len(path.parts) > 1 and path.parts[0] == 'assets' and path.suffix.lower() in ASSET_TYPES):
         raise DeployError('File non autorizzato nel pacchetto pubblico: ' + name)
     return name
@@ -63,6 +65,12 @@ def build_release(source, output, revision):
     if not assets.is_dir() or assets.is_symlink():
         raise DeployError('Cartella assets mancante o non valida.')
     names = list(PUBLIC_FILES)
+    lab_present = [(source / name).exists() for name in LAB_FILES]
+    if any(lab_present):
+        if not all(lab_present) or (source / 'lab').is_symlink():
+            raise DeployError('La pagina laboratorio deve includere HTML e JavaScript senza link simbolici.')
+        names.extend(LAB_FILES)
+    names.extend(name for name in EXTRA_FILES if name not in names and (source / name).exists())
     for item in sorted(assets.rglob('*')):
         if item.is_symlink():
             raise DeployError('Link simbolico non consentito in assets.')
@@ -74,7 +82,8 @@ def build_release(source, output, revision):
     files = {}
     for name in names:
         item = source / name
-        if item.is_symlink() or not item.is_file():
+        parents = [source.joinpath(*Path(name).parts[:i]) for i in range(1, len(Path(name).parts))]
+        if item.is_symlink() or any(parent.is_symlink() for parent in parents) or not item.is_file():
             raise DeployError('File pubblico mancante o non valido: ' + name)
         data = item.read_bytes()
         if not data or len(data) > MAX_FILE_SIZE:

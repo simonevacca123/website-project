@@ -1,0 +1,24 @@
+{
+  "slug": "turni",
+  "pubblicato": true,
+  "titolo": "Turni chiari, copertura visibile",
+  "tipo": "Demo dimostrativa",
+  "categoria": "Web Development",
+  "stato": "Prototipo interattivo",
+  "lab": false,
+  "descrizione": "Un cruscotto per esplorare la gestione dei turni di una piccola attività immaginaria.",
+  "tecnologie": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+  ],
+  "demo": "/demo/",
+  "contesto": "Scenario sintetico di una caffetteria con tre persone e due fasce giornaliere. Non deriva da software o dati di clienti.",
+  "problema": "Una lista di turni può non rendere immediatamente visibile una fascia scoperta.",
+  "obiettivi": "Modificare le assegnazioni e rendere leggibile la differenza fra persone presenti e copertura richiesta.",
+  "soluzione": "Le assegnazioni vengono contate per giorno e fascia. La differenza rispetto al fabbisogno determina le assegnazioni mancanti.",
+  "interfaccia": "Selettori raggruppati per persona, riepilogo delle sei fasce, totale delle ore e pulsante di ripristino.",
+  "scelte": "Stato in memoria e nessun salvataggio. Ogni persona può avere un turno per giorno: il modello evita sovrapposizioni all’interno di questo scenario.",
+  "compromessi": "Nessuna autenticazione, presenza reale o gestione dei vincoli contrattuali. Non utilizzabile come sistema per il personale senza ulteriore sviluppo e verifiche.",
+  "risultati": "Cambiare un turno aggiorna i conteggi e il totale ore; il ripristino riporta lo scenario iniziale. Sono risultati della demo, non benefici misurati presso aziende."
+}

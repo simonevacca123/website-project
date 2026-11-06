@@ -178,3 +178,97 @@ Limiti esterni ancora presenti: l'API GitHub, la guida ufficiale Aruba e il domi
 Sono state salvate nella bozza dell'ambiente le aggiunte di rete api.github.com, guide.hosting.aruba.it, www.simonevacca.it e simonevacca.it, preservando i preset esistenti. La bozza non è applicata al runtime: occorrono revisione/salvataggio nelle impostazioni e pubblicazione dell'ambiente. Nessun nuovo Secret FTP è stato richiesto nell'ambiente cloud; il workflow riutilizza i nomi dei GitHub Actions Secrets già previsti dal tentativo precedente.
 
 Il completamento dei test locali non dimostra un deploy riuscito su Aruba. Occorre ancora controllare il primo run reale e gli eventuali dati mancanti. Questa distinzione resta necessaria finché l'accesso esterno non è disponibile o il proprietario non fornisce l'esito del run.
+
+## Laboratorio — primo esperimento nella copia di lavoro
+
+Aggiunta la voce Laboratorio nella navigazione della homepage e la pagina `lab/index.html`, con script separato `lab/lab.js` e stili circoscritti nel CSS condiviso. La prima demo individua righe duplicate, mantiene l'ordine, permette di scegliere il confronto maiuscole/minuscole, gestisce accenti Unicode e offre copia con alternativa manuale. Non salva né invia il testo. Limiti: 500 righe non vuote e 20.000 caratteri; confronta righe intere, non significati o identità di persone.
+
+La scheda espone problema, soluzione, stato funzionante, categoria, tecnologie e limiti. È dichiarata personale e dimostrativa. Nessun cliente o risultato commerciale inventato. Il percorso di apprendimento del proprietario resta distinto da esperienze professionali da verificare.
+
+Verifiche eseguite: navigazione dalla home, validazione, esempio da cinque righe con tre voci uniche, confronto case-sensitive, cambio input che invalida il vecchio risultato, copia e fallback, reset, accenti normalizzati, HTML trattato come testo, confini 500/501 righe e 20.000 caratteri. Quattro larghezze (320/390/768/1440) e testo al 200% senza overflow. Nessun errore JavaScript o richiesta esterna durante il test. Controllati visivamente gli screenshot desktop e mobile.
+
+Passano anche la suite browser precedente della homepage, i 14 test unitari di pacchetto/trasferimento inclusa la nuova coppia di file pubblici del laboratorio, la sintassi JavaScript e 40 riferimenti statici fra le due pagine. Il workflow locale include la nuova suite; non è stata eseguita su GitHub.
+
+La pubblicazione rimane bloccata: il precedente commit locale `e353ae2` è stato rifiutato due volte dal remoto con `fatal error in commit_refs_rules`, mentre integrità locale e simulazione di push riuscivano. Le modifiche del laboratorio non sono state caricate su GitHub o Aruba e nessun nuovo push è stato tentato in questo passo.
+
+## Nuovo audit — master prompt, 5 novembre 2026
+
+Riferimento effettivo: HEAD locale e353ae2 più lavoro non committato sul Lab. Le sezioni precedenti sono storiche. Le nuove istruzioni vietano commit/push/deploy e richiedono workflow inizialmente manuale.
+
+| Area | Evidenza iniziale | Priorità / rischio |
+| --- | --- | --- |
+| Architettura | Sito statico; app.js dipende dal DOM homepage; Lab separato. | Conservare gli script esistenti; isolare nuove applicazioni. |
+| Tecnica | 40 riferimenti validi, sintassi JS valida, 14 prove unità deploy superate. | Estendere controlli a tutte le pagine; browser locale necessita permesso socket. |
+| UX | Homepage leggibile, ma mancano orientamento tra sezioni e pagine personali. | Navigazione comune, URL diretti, stati/feedback, prove a 320px e testo 200%. |
+| Commerciale | Nessun catalogo di lavori verificabili, prima demo disponibile. | Mostrare solo demo realizzate e dichiarate; zero clienti o risultati inventati. |
+| SEO | Title/description presenti; canonical, OG, sitemap/robots mancanti. | Usare dominio www indicato nel nuovo documento; indicizzazione reale non verificata. |
+| Contenuti | progetti[] vuoto; nessuno stato bozza; documenti crescita ormai datati. | JSON privati come sorgente e generazione di HTML pubblico filtrato. |
+| Pubblicazione | Workflow automatico locale incompatibile con la nuova richiesta. | Rimuovere trigger push; aggiungere scelta manuale esplicita per pubblicare. |
+
+Piano: completare fondamenta, portfolio, catalogo/case study, Lab, strumenti, demo, SEO e QA nell'ordine richiesto. Aggiungere una generazione Python senza librerie per condividere il layout e pubblicare schede strutturate in HTML indicizzabile: non introduce runtime server. La homepage viene modificata incrementalmente, non rigenerata da zero.
+
+Rischi principali: regressioni nel calcolatore/contatti, asset relativi nelle sottocartelle, esposizione di bozze, timer delle animazioni, confusione fra demo e clienti. Verifiche dedicate accompagneranno ogni funzione. Nessuna fotografia, profilo sociale, esperienza o sede a Torino viene dedotta dall'email universitaria.
+
+## Esito dell'evoluzione locale del master prompt
+
+Le indicazioni di questo aggiornamento sostituiscono le vecchie descrizioni di funzionalità mancanti. Il sito online non è stato contattato, confrontato o modificato. Nessun commit, push, merge, tag o deploy eseguito in questo intervento.
+
+### Architettura e contenuti realizzati
+
+Homepage conservata; nuove pagine Servizi e Chi sono; catalogo strutturato e tre case study; Lab con pulizia elenchi e BFS/Dijkstra; calcolatore unico ampliato; checklist con report; demo turni sintetica. Template comuni e generatore Python senza pacchetti runtime aggiuntivi. Bozze, modelli e piano editoriale esclusi dal pacchetto.
+
+La navigazione e i metadati della homepage vengono aggiornati in blocchi delimitati. Le nuove pagine sono generate in HTML statico; catalogo e case study restano leggibili senza JavaScript. Contatti e calcolatore non sono duplicati in nuove route. Non sono stati inventati profili, sede, fotografie, clienti o ricavi. I tre progetti pubblicabili sono demo effettivamente disponibili nella copia locale.
+
+### Verifiche realmente eseguite
+
+| Controllo | Evidenza |
+| --- | --- |
+| Generazione ripetibile | `build_pages.py --check`: 16 output aggiornati (13 HTML, sitemap, robots e manifest interno). |
+| Collegamenti | 229 riferimenti statici validi e ID univoci sulle pagine pubbliche. Non verifica servizi esterni. |
+| JavaScript | Sintassi di 8 script pubblici verificata con Node. |
+| Algoritmi | Caso pesato BFS/Dijkstra, assenza percorso, partenza=arrivo, input invalidi e 160 confronti con oracolo indipendente Bellman-Ford. |
+| Formule | Calcoli mensili/annuali, valore orario, valore zero, mancato valore orario e input fuori intervallo. |
+| Contenuti | 6 test: bozze escluse, escaping, URL/slug non validi, duplicati/incompletezza, pacchetto senza documenti e SEO/sitemap coerenti. |
+| Deploy locale | 14 test unitari più 3 integrazioni FTPS/HTTPS locali: backup, upload, rollback, dati estranei conservati, certificato non attendibile rifiutato, versione HTTPS inattesa rilevata. Nessun Aruba coinvolto. |
+| Workflow | YAML letto correttamente; solo workflow_dispatch, publish false di default. Nessun run GitHub eseguito. |
+| Browser nuove sezioni | Suite `platform_smoke.py` eseguita anche servendo **dist/site**, senza contenuti interni. 13 URL diretti, titolo univoco, canonical, salto contenuto da tastiera, 320/390/768/1440px e testo 200%. |
+| Interazioni | Pathfinding con tastiera, pausa/reset, modifica durante animazione, nessun percorso; calcolatore ampliato; checklist errori, risposte miste/ignote, priorità, copia/fallback/download e invalidazione; turni, copertura, ore, reset, contatto contestuale. |
+| Dati nel browser | Nessun errore JavaScript/HTTP, richiesta esterna, cookie o localStorage osservato nella suite delle nuove pagine. Catalogo disponibile senza JavaScript. |
+| Regressione | Suite homepage originale (7 gruppi più fallback senza email) e suite pulizia elenchi, dopo l'evoluzione e nella verifica finale. |
+
+Nelle prove sono state corrette aspettative del test sulla formattazione italiana delle migliaia, sulla simulazione degli appunti negati e sull'estrazione del testo `noscript`. Non erano errori degli algoritmi o invii reali. Migliorati inoltre i testi singolare/plurale della demo turni. Gli screenshot finali non includono il focus del salto contenuto che compariva nelle prime catture.
+
+### Usabilità secondo Nielsen
+
+| Principio | Applicazione verificabile |
+| --- | --- |
+| Stato visibile | Contatori, pausa/avvio, report e copertura descritti in messaggi di stato. |
+| Linguaggio familiare | Servizi e strumenti parlano di tempo, contatti, turni e problemi. I termini algoritmici sono spiegati nel Lab. |
+| Controllo utente | Reset, pausa, singolo passo, dati temporanei, nessun invio dal server. |
+| Coerenza | Navigazione, carta/arancio, pulsanti e tipografia condivisi. |
+| Prevenzione errori | Limiti input, partenza/arrivo distinti, pubblicazione separata dalle prove. |
+| Riconoscimento | Esempio per elenchi, etichette dei turni e legenda della mappa. |
+| Efficienza | CTA preimposta servizio; report copiabile/scaricabile; un solo calcolatore. |
+| Essenzialità | Tre schede autentiche, nessun filtro inutile o categoria vuota. |
+| Recupero errori | Focus sui campi mancanti, copia manuale alternativa, reset e assenza percorso esplicita. |
+| Aiuto | Formule, limiti, regole degli algoritmi e guide di manutenzione. |
+
+### Accessibilità e peso
+
+Tastiera provata nelle interazioni principali, focus visibile, etichette, landmark, messaggi di stato, responsive e preferenza reduced motion. La griglia ha scorrimento orizzontale locale dichiarato per conservare celle utilizzabili; il documento non deborda. Una struttura a griglia non sostituisce una prova con un lettore di schermo.
+
+Contrasti calcolati con luminanza relativa: testo su carta 14,44:1; testo secondario su carta 5,97:1; arancione su carta 5,21:1; testo chiaro del Lab 11,93:1; bianco su percorso arancione 5,83:1; testo su cella esplorata 11,80:1. Sono coppie specifiche, non un audit completo di tutti gli stati o una certificazione WCAG.
+
+Pacchetto pubblico misurato: **25 file, 135.626 byte non compressi** complessivi. CSS condiviso 32.521 byte; tutti gli 8 JavaScript insieme 31.935 byte; homepage HTML 15.592 byte. Le pagine caricano solo i propri script e usano font di sistema. Nessuna immagine pesante o risorsa esterna aggiunta; favicon SVG conservata. Non tutte le pagine caricano tutti questi byte.
+
+Core Web Vitals reali, prestazioni sulla rete mobile e stabilità del layout in condizioni di produzione non sono stati misurati. Il peso dei file non equivale a LCP/INP/CLS o a un punteggio Lighthouse. Per futuri screenshot/foto usare dimensioni intrinseche, compressione appropriata e prove prima della pubblicazione.
+
+### Problemi aperti e limiti
+
+- Invio/ricezione reali della posta, Safari/Firefox, dispositivi fisici e screen reader da verificare manualmente; nessuna conformità WCAG completa dichiarata.
+- Protocollo, hostname, directory, restrizioni IP e impostazioni del vero Aruba non verificati. Nessuna produzione contattata.
+- Precedente push rifiutato dal remoto con commit_refs_rules: non diagnosticato né ritentato, in accordo con il nuovo divieto.
+- Foto e profili non forniti; sede/area di Torino non dedotta dagli studi. Case study commerciali richiedono materiale e autorizzazioni.
+- Sitemap e canonical usano il dominio www indicato nel prompt, ma redirect, indicizzazione e configurazione HTTPS live non verificati.
+- Una bozza precedentemente online non viene cancellata automaticamente dal server: ritiro da gestire separatamente con autorizzazione.
+- Prima di analytics o contatti server-side verificare dati trattati, base giuridica, fornitori, cookie/consenso quando applicabile, tempi di conservazione, informazioni all'utente e gestione dei diritti. Non è stata inventata un'informativa privacy. I log hosting non sono stati ispezionati.

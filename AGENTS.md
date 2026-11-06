@@ -1,8 +1,8 @@
 # Regole di lavoro
 
 - Procedere per piccoli passi spiegati in italiano semplice: il proprietario è principiante.
-- Il proprietario ha autorizzato commit e push delle modifiche correnti il 5 novembre 2026. Eseguirli nell'ambito richiesto, dopo i controlli, senza forzare il push. Per nuove attività seguire le autorizzazioni della relativa conversazione; merge e creazione di tag richiedono una richiesta specifica.
-- Il proprietario ha autorizzato la pubblicazione automatica del sito su Aruba tramite push su main e la relativa configurazione. Il workflow deve verificare FTPS, conservare il backup prima delle scritture e pubblicare solo i file autorizzati. Nessuna cancellazione di file remoti estranei. Per interventi esterni a questo flusso serve una richiesta specifica.
+- Il 6 novembre 2026 il proprietario ha nuovamente autorizzato commit e push delle modifiche correnti, chiedendo prima una spiegazione. La spiegazione è stata fornita. Questa autorizzazione sostituisce il divieto di commit/push del master prompt per questo intervento. Non forzare push, non eseguire operazioni distruttive, merge o tag senza necessità e autorizzazione specifica.
+- NON pubblicare, contattare produzione, modificare DNS o credenziali. Preparare solo il workflow manuale, test e backup. Nessuna cancellazione automatica di file remoti. Credenziali esclusivamente nei GitHub Secrets, mai in chat o nel repository.
 - Preservare la versione funzionante, l'identità grafica e i contenuti verificati.
 - Non inventare clienti, progetti, risultati, contatti o credenziali.
 - Mantenere il sito statico; introdurre dipendenze applicative, framework o servizi solo per necessità dimostrabili.

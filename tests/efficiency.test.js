@@ -1,0 +1,10 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {calculate} = require('../strumenti/efficiency.js');
+assert.deepEqual(calculate({minutes:30, days:20, reduction:50, months:10, rate:25}), {before:10, saved:5, after:5, annual:50, value:125, annualValue:1250});
+assert.equal(calculate({minutes:60, days:10, reduction:0}).annual, 0);
+assert.equal(calculate({minutes:180, days:31, reduction:100, rate:0}).after, 0);
+assert.equal(calculate({minutes:30, days:20, reduction:50}).value, null);
+for (const value of [-1, Infinity, NaN, 10001]) assert.throws(() => calculate({minutes:30, days:20, reduction:50, rate:value}));
+assert.throws(() => calculate({minutes:30, days:20, reduction:50, months:13}));
+console.log('PASS: formule mensili/annuali, valore orario, zero, estremi e input invalidi.');

@@ -1,7 +1,5 @@
-// MODIFICA QUI I CONTATTI E I PROGETTI. Salva, poi ricarica questo file su Aruba.
+// Recapito pubblico. Le schede progetto sono in content/progetti/: vedi CONTENT-GUIDE.md.
 window.PORTFOLIO = {
-  // Inserisci solo una casella già esistente e verificata. Puoi usare anche Gmail.
   email: "simone.vacca@edu.unito.it",
-  // Aggiungi i progetti dentro le parentesi quadre seguendo l'esempio nella guida.
-  progetti: []
+  progetti: [] // Compatibilità con le vecchie schede homepage; usare il catalogo strutturato.
 };

@@ -1,9 +1,13 @@
 name: Pubblica sito su Aruba
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Pubblicare su Aruba dopo test e backup (solo dopo verifica hosting)?'
+        type: boolean
+        default: false
+        required: true
 
 permissions:
   contents: read
@@ -14,7 +18,7 @@ concurrency:
 
 jobs:
   publish:
-    name: Test, backup e pubblicazione FTPS
+    name: Controlli e pubblicazione solo se richiesta
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -37,9 +41,9 @@ jobs:
 
       - name: Controlla collegamenti e sintassi JavaScript
         run: |
+          python3 scripts/build_pages.py --check
           python3 scripts/check_site.py
-          node --check app.js
-          node --check contenuti.js
+          python3 scripts/check_js.py
 
       - name: Installa gli strumenti di test
         run: |
@@ -48,13 +52,31 @@ jobs:
 
       - name: Prova backup, trasferimento FTPS e homepage
         run: |
-          python3 -m unittest discover -s tests -p 'test_deploy_*.py' -v
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+          node tests/algorithms.test.js
+          node tests/efficiency.test.js
           python3 -u tests/browser_smoke.py
+          python3 -u tests/lab_smoke.py
+          python3 -u tests/platform_smoke.py
 
       - name: Prepara soltanto i file pubblici
         run: python3 scripts/deploy_site.py build
 
+      - name: Conserva il pacchetto da revisionare
+        uses: actions/upload-artifact@v4
+        with:
+          name: sito-da-revisionare
+          path: dist/site/
+          retention-days: 7
+
+      - name: Verifica ramo prima della pubblicazione richiesta
+        if: ${{ inputs.publish && github.ref != 'refs/heads/main' }}
+        run: |
+          echo "Pubblicazione consentita solo dal ramo main."
+          exit 1
+
       - name: Salva i file online prima di modificarli
+        if: ${{ inputs.publish && github.ref == 'refs/heads/main' }}
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -64,6 +86,7 @@ jobs:
         run: python3 scripts/deploy_site.py backup
 
       - name: Conserva il backup su GitHub prima del caricamento
+        if: ${{ inputs.publish && github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v4
         with:
           name: aruba-backup-${{ github.run_id }}-${{ github.run_attempt }}
@@ -72,6 +95,7 @@ jobs:
           retention-days: 30
 
       - name: Carica e verifica i file via FTPS
+        if: ${{ inputs.publish && github.ref == 'refs/heads/main' }}
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -81,4 +105,5 @@ jobs:
         run: python3 scripts/deploy_site.py deploy
 
       - name: Controlla la versione visibile sul sito HTTPS
+        if: ${{ inputs.publish && github.ref == 'refs/heads/main' }}
         run: python3 scripts/deploy_site.py verify

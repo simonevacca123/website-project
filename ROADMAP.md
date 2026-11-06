@@ -1,41 +1,45 @@
-# Il percorso, un passo alla volta
+# Roadmap dopo il master prompt
 
-Ogni passo deve lasciare una versione funzionante. Le attività future in questa pagina non sono già implementate. Il proprietario ha autorizzato commit e push delle modifiche correnti e successivamente ha richiesto la pubblicazione automatica su Aruba. Merge e tag restano subordinati a una richiesta specifica.
+> Aggiornamento operativo — 6 novembre 2026: dopo la spiegazione delle modifiche, il proprietario ha autorizzato un commit e il caricamento su GitHub. Le indicazioni precedenti di divieto di commit/push descrivono la fase del 5 novembre e sono superate per questo caricamento. La pubblicazione su Aruba resta separata e non viene eseguita. L’esito del push verrà verificato sul remoto; questo documento non ne anticipa il successo.
 
-## Fase 0 — Conoscere e mettere in ordine: completata in sviluppo
+Il punto verificabile è PROGRESS.md. Le nuove regole vietano all'assistente commit, push e deploy. Tutto ciò che segue è locale finché il proprietario non rivede e autorizza una pubblicazione.
 
-- [x] Leggere HTML, CSS, JavaScript e configurazione.
-- [x] Preparare le guide e `.gitignore`.
-- [x] Salvare controlli ripetibili e una checklist.
-- [x] Verificare la copia locale in Chromium, anche a dimensioni mobile.
-- [x] Documentare problemi e dati mancanti in `AUDIT.md`.
+## Realizzato in questa evoluzione
 
-Durante la Fase 0 i file dell'applicazione sono rimasti identici alla versione ricevuta. Il sito online non è stato modificato o verificato contro questi file.
+- Fondamenta: audit, guide, generazione statica, separazione applicazioni e test.
+- Portfolio: homepage conservata, pagine Servizi e Chi sono, navigazione e contatti mailto espliciti.
+- Progetti: schede strutturate, tre demo realmente disponibili, pagine di approfondimento e bozze escluse.
+- Lab: pulizia elenchi conservata, visualizzatore BFS/Dijkstra con ricerca passo passo.
+- Strumenti: calcolatore unico ampliato, checklist con report locale.
+- Showroom: turni e copertura con soli dati sintetici.
+- SEO: URL statici, title/description univoci, canonical, Open Graph, sitemap e robots.
+- Deployment: workflow manuale, controlli, pacchetto selettivo e backup; non avviato sul vero hosting.
 
-## Fase 1 — Portfolio, divisa in piccoli interventi
+## Prossimo passo concreto
 
-1. **Contatto email configurato in sviluppo:** inserito `simone.vacca@edu.unito.it`, fornito dal proprietario. Verificati indirizzo visibile, destinatario, oggetto e testo del collegamento `mailto`, oltre alla copia alternativa. Restano la prova nell'app di posta su un dispositivo reale e la futura pubblicazione autorizzata.
-2. **Presentazione e servizi, primo intervento completato in sviluppo:** introduzione con nome e attività, riepilogo dei tre servizi, nota personale sugli studi in AI e sulla curiosità. Migliorate tipografia, gerarchie e spazi mantenendo colori e identità. Nessun cliente o risultato inventato.
-3. **Primo progetto:** raccogliere materiale reale o una demo dichiarata; preparare una scheda e il primo approfondimento.
-4. **Pagina progetti:** creare `/progetti/` e riutilizzare una struttura dati semplice.
-5. **Accessibilità e ricerca, parzialmente affrontate:** testi visibili di almeno 14 pixel, controlli più ampi, icone SVG, reflow verificato con testo al 200%. Restano verifica su dispositivi reali, audit accessibilità completo, dominio preferito, canonical, Open Graph, sitemap e robots.
+Rivedere insieme la versione locale e provare personalmente le demo, iniziando dal Lab. Simone dovrebbe poter spiegare almeno un progetto e le sue scelte. Successivamente completare i dati autentici (foto e profili facoltativi) e le prove manuali di email, Safari/Firefox e telefono.
 
-Per ogni intervento: spiegare cosa cambia, modificare solo il necessario, provare e mostrare il risultato. Non serve affrontare tutti i punti contemporaneamente.
+Per la pubblicazione: verificare protocollo sicuro, nome server, directory pubblica e modalità di accesso Aruba; configurare segreti nell'interfaccia ufficiale GitHub. Non richiede password in chat. Il vecchio rifiuto Git remoto resta da diagnosticare solo quando verrà nuovamente richiesto lavorare su GitHub.
 
-## Fase 2 — Primo laboratorio: da iniziare
+## Crescita, soltanto con un bisogno concreto
 
-Creare `/lab/`, con categorie, stato, descrizioni, tecnologie e collegamenti verificati. Prima idea da valutare: uno strumento che pulisce un piccolo elenco di dati e mostra i duplicati, elaborando tutto nel browser. È una proposta, non una demo già realizzata. Deve essere comprensibile e dichiarare i limiti.
+| Passo futuro | Quando ha senso | Confine da mantenere |
+| --- | --- | --- |
+| Nuovi progetti | Esistono demo, materiale e autorizzazioni verificati. | Niente schede vuote o finti clienti. |
+| Preventivi / simulatore costi / organizzazione | Problema e formule validati con chi lo usa. | Strumenti distinti da consulenze o risultati garantiti. |
+| Dashboard avanzate | Ci sono dati e decisioni specifiche da supportare. | Niente indicatori decorativi inventati. |
+| Contatti server-side | Il mailto diventa un ostacolo verificato. | Validazione server, antispam, feedback reale, conservazione e privacy. |
+| Backend, API e database | Servono accessi condivisi o persistenza. | Hosting appropriato, backup, ruoli e migrazioni; nessun segreto nel browser. |
+| Applicazioni AI | Esistono caso d'uso, dati leciti e budget. | Misurare qualità, errori, costi; spiegare limiti e fallback. |
+| Analytics | Occorre rispondere a una domanda di prodotto concreta. | Prima verificare dati, cookie, consenso se richiesto, conservazione e fornitore. |
+| Monitoring | Il sito è pubblicato con endpoint confermati. | Controlli disponibilità e avvisi autorizzati, senza dati sensibili nei log. |
+| Staging | Crescono le modifiche o i collaboratori. | Dominio separato, noindex e accesso appropriato; robots non protegge segreti. |
+| Sottodomini / deploy separati | Una demo richiede un servizio persistente. | Il portfolio statico deve restare autonomo. |
 
-## Fase 3 — Gestione delle versioni: basi documentate
+Docker, Kubernetes, microservizi e CMS non sono necessari ora. Su Aruba Basic Linux non si presume disponibile un processo Node o AI persistente.
 
-Avvio, verifiche, struttura e distinzione tra copia locale, GitHub e Aruba sono spiegati. Dopo la revisione della homepage, il proprietario ha autorizzato l'assistente a salvare e trasferire su GitHub le modifiche correnti. Il salvataggio comprende codice, guide e test; nessuna pubblicazione su Aruba è stata richiesta.
+## Contenuti utili, senza riempitivi
 
-## Fase 4 — Pubblicazione automatica: implementata, da verificare sull'hosting reale
+Le bozze del blog sono sotto `content/blog/`. Primo possibile articolo: quando una piccola attività ha bisogno di un gestionale, con esempi semplici e limiti. Seguono processi manuali, scelta di un sito, convenienza di un'automazione e valutazione di software su misura. Pubblicare un contenuto originale revisionato alla volta.
 
-Su esplicita richiesta del proprietario, il workflow `.github/workflows/deploy.yml` è stato aggiornato per i push su `main` e per l'avvio manuale. Esegue test, prepara solo i file pubblici, verifica il collegamento FTPS, conserva il backup su GitHub prima del trasferimento, aggiorna l'HTML per ultimo e confronta il risultato HTTPS con la versione attesa. Non elimina file remoti estranei. Sono previste prove automatiche locali e ripristino dei file preesistenti in caso di errore di trasferimento.
-
-Restano da verificare il primo run GitHub, la presenza/validità dei Secrets esistenti, il supporto FTPS e la directory del vero hosting. Questa macchina non può ancora leggere API GitHub, guida Aruba o sito pubblico per il blocco della rete; sono state salvate le aggiunte necessarie alla configurazione dell'ambiente. La scelta dell'avvio automatico sostituisce per richiesta del proprietario il precedente piano di solo avvio manuale.
-
-## Fase 5 — In seguito, solo quando serve
-
-Valutare invio contatti protetto da spam, backend, database, strumenti AI, analytics rispettosi della privacy e monitoraggio in base a esigenze concrete, costi e compatibilità. Non è prevista un'installazione immediata di questi servizi.
+Una ricerca locale come “sviluppatore software a Torino” richiede conferma del territorio servito prima di inserirlo come fatto. SEO tecnica e portfolio aiutano la comprensione, non garantiscono visibilità o contatti. Dopo la pubblicazione si potranno condividere demo su profili autentici e misurare i risultati senza prometterli in anticipo.

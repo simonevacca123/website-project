@@ -1,61 +1,34 @@
-# Come è costruito il sito
+# Architettura attuale
 
-## Com'è adesso
+## Runtime statico
 
-Il server invia i file così come sono. Non c'è un programma sul server che elabora richieste commerciali o salva dati. Questa struttura è adatta a una vetrina sul piano Aruba Basic Linux indicato dal proprietario.
+Aruba serve HTML, CSS, JavaScript e asset. Ogni route ha il proprio `index.html`, quindi funziona anche da URL diretto senza router server, SPA o Node persistente. Il comportamento effettivo della directory pubblica del vero hosting resta da verificare.
 
-Il browser apre `index.html`, applica `style.css` e carica prima `contenuti.js`, poi `app.js`. L'attributo `defer` fa eseguire gli script dopo la lettura dell'HTML, nell'ordine indicato.
+La homepage è conservata e modificata incrementalmente. `app.js` gestisce scenari, contatti e UI del calcolatore; `strumenti/efficiency.js` contiene le formule pure. Nessuna seconda implementazione del calcolatore.
 
-`contenuti.js` definisce `window.PORTFOLIO`. `app.js` legge quella configurazione e:
+## Contenuti e generazione
 
-- aggiorna l'anno nel footer;
-- crea le eventuali schede progetto;
-- mostra uno dei tre scenari dimostrativi;
-- calcola le ore potenzialmente risparmiate;
-- prepara la richiesta, e apre la posta soltanto se esiste un'email configurata;
-- permette di copiare il testo, o selezionarlo se la copia automatica non è disponibile.
+`content/progetti/*.json` → `scripts/build_pages.py` → catalogo, case study e Lab in HTML. Le schede vengono validate, filtrate per `pubblicato: true` ed escaped. Gli URL ammettono HTTPS o directory interne con slug sicuri. Le bozze non sono inviate al browser. `content/bozze` e `content/blog` non vengono letti dal generatore.
 
-I campi del modulo non vengono salvati dal codice del sito né inviati a un server. Eventuali condizioni del browser, dell'app email o dell'hosting restano separate da questa affermazione.
+`templates/layout.html` contiene shell comune; `templates/*.html` i corpi delle nuove pagine. La generazione aggiorna solo due blocchi marcati della homepage (navigazione e SEO). Gli output sono normali file leggibili, disponibili anche senza eseguire il generatore sul server. `--check` verifica la riproducibilità degli output e rileva modifiche manuali agli HTML generati.
 
-## Primo miglioramento della homepage
+La generazione aggiorna `sitemap.xml`, `robots.txt` e `scripts/public-files.json`. Quest'ultimo è un elenco interno esplicito: lo script di deployment aggiunge solo tali file e gli asset consentiti al pacchetto. Non esiste una copia indiscriminata del repository. Gli HTML vecchi rimasti fuori manifest non vengono pubblicati; le versioni già online richiedono un ritiro esplicito perché non si cancellano file remoti.
 
-La scala dei caratteri usa unità `rem`, relative alla dimensione scelta nel browser: circa 18 pixel per il corpo e almeno 14 per note e dettagli alla dimensione standard. I contenitori possono crescere con il testo e le griglie diventano colonne singole sugli schermi stretti. Non sono stati aggiunti font esterni.
+## Applicazioni indipendenti
 
-`index.html` contiene un piccolo insieme di simboli SVG riutilizzabili. Le icone statiche li richiamano con `<use>`; `createIcon()` in `app.js` li usa per i pulsanti generati dal codice. Questo evita che le frecce dipendano dalla presenza di un carattere nel font del dispositivo. I testi dei progetti configurabili continuano a essere inseriti come testo.
+- `lab/lab.js`: pulizia elenchi, ora caricata da `/lab/elenchi/`; confronto Unicode NFC, Set, nessun salvataggio.
+- `lab/percorso/algorithms.js`: BFS e Dijkstra puri, esportabili per test Node; `ui.js` gestisce mappa, timer, tastiera e stati. Modifiche o reset annullano l'animazione.
+- `strumenti/checklist.js`: report da risposte esplicite, con invalidazione al cambio input, copia/fallback e file testo tramite Blob locale.
+- `demo/turni.js`: stato sintetico in memoria; una fascia per persona/giorno, conteggi per fascia e totale ore. Nessuna gestione personale reale.
 
-Il riepilogo dei servizi è un elenco semantico nella homepage. Gli identificatori delle sezioni e i comportamenti di scenari, calcolatore e modulo sono conservati.
+Nessuno di questi script carica `app.js`. Il CSS comune usa componenti semplici e stili specifici alle demo. Il costo del CSS condiviso è misurato nell'audit; non servono librerie di componenti o bundler.
 
-## Parti da conservare
+## Contatti e integrazioni future
 
-Colori crema e arancio, titoli ampi, esempi prima/dopo e linguaggio concreto sono coerenti con il pubblico di piccole aziende. I pulsanti hanno elementi HTML nativi, i campi hanno etichette e gli scenari dichiarano di essere dimostrazioni. Il CSS gestisce schermi piccoli e preferenza per movimento ridotto. Il sito non carica librerie o font esterni.
+Il recapito è in `contenuti.js`. Il modulo prepara il testo e apre `mailto`; un futuro trasporto server-side sostituirà soltanto quella parte dopo aver definito endpoint, validazione server, limiti, spam, gestione errori, privacy e conservazione. Il messaggio “inviato” sarà mostrato solo dopo una risposta reale del servizio.
 
-## Limiti attuali
+Per future app con backend usare un endpoint HTTPS configurato, con timeout e stato di indisponibilità; non inserire API key nel frontend. Isolare l'app su un hosting adatto o sottodominio, mantenendo portfolio e demo statiche autonomi. Autenticazione, CORS e database saranno valutati sulla singola funzione, non predisposti come infrastruttura vuota.
 
-`app.js` presume di trovare gli elementi della homepage. Non va caricato senza adattamenti su una pagina nuova che non li contiene. Gli scenari sono scritti direttamente nel JavaScript; la configurazione progetti non contiene ancora slug, stato, tecnologie o pagine di approfondimento.
+## Deployment predisposto
 
-Le schede progetto usano `textContent` per testi configurabili e consentono collegamenti HTTP/HTTPS. Gli scenari usano `innerHTML` con stringhe definite nel codice. Non bisogna estendere quell'inserimento HTML a dati provenienti dagli utenti senza una soluzione appropriata. Questa osservazione non è una certificazione di sicurezza.
-
-## Crescita prevista, ancora da implementare
-
-```text
-index.html                 pagina commerciale
-progetti/index.html        elenco dei lavori
-progetti/<slug>/index.html approfondimento di un lavoro
-lab/index.html             catalogo esperimenti
-lab/<nome>/index.html      un esperimento funzionante
-assets/                    immagini e risorse condivise
-```
-
-Una directory con `index.html` permette percorsi come `/lab/` senza un router o un framework. I collegamenti condivisi dovranno funzionare anche dalle pagine annidate. `/contatti/` sarà aggiunta solo se porta un vantaggio rispetto alla sezione esistente.
-
-Per la Fase 1 valuteremo di estendere gradualmente gli oggetti di `contenuti.js` con identificatore, natura del progetto (reale o dimostrativo), problema affrontato, soluzione, stato e collegamenti. Gli elementi sperimentali devono essere distinti dai lavori per clienti. Non è stata ancora cambiata la struttura dati: le pagine attuali continuano a usare i campi esistenti.
-
-Ogni esperimento avrà il proprio JavaScript. Un backend, cioè codice eseguito su un server, si valuterà solo quando una funzione concreta lo richiederà. Non si presume che Aruba Basic Linux possa mantenere servizi Node.js o AI sempre accesi.
-
-## Pubblicazione automatica
-
-Il workflow GitHub esegue controlli e test prima del deploy. `scripts/deploy_site.py` usa soltanto Python standard per produrre `dist/site` con un elenco esplicito di file, creare un backup remoto locale, trasferire tramite FTPS con certificato verificato e controllare il risultato HTTPS. Il backup viene conservato come artefatto GitHub prima della scrittura sul server.
-
-La configurazione FTP viene letta dai Secrets del runner; non viene salvata nei file pubblici. I pacchetti di `requirements-test.txt` servono solo ai test: includono un browser e un server FTPS locale di prova. Aruba continua a ricevere solo HTML, CSS, JavaScript e risorse statiche.
-
-Le nuove directory pubbliche richiederanno un aggiornamento deliberato dell'elenco di pubblicazione. Il workflow non presume che tutte le cartelle del repository appartengano al sito.
+Solo avvio manuale GitHub Actions, scelta `publish` false di default. Test e pacchetto precedono qualsiasi connessione remota. FTPS esplicito con TLS verificato è l'implementazione predisposta, non una dichiarazione del supporto del piano Aruba. Backup salvato come artefatto prima delle scritture, verifica hash, ripristino best effort, controllo HTTPS finale. Vedi DEPLOYMENT.md per limiti e autorizzazioni.

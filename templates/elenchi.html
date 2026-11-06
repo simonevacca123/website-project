@@ -1,0 +1,55 @@
+
+    <section class="lab-hero">
+      <div class="wrap">
+        <p class="eyebrow">IL LABORATORIO / DI SIMONE VACCA</p>
+        <h1>Un elenco,<br><span>senza doppioni.</span></h1>
+        <p class="lab-lead">Una piccola automazione da provare: incolla le voci, confronta le righe e copia un elenco più pulito. Il testo resta nel tuo browser.</p>
+        <div class="lab-hero-bottom"><a class="button" href="#esperimenti">Prova lo strumento</a><p>Progetti personali e dimostrativi.<br>Ogni esperimento è distinto dai lavori per clienti.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="esperimenti" aria-labelledby="experiments-title">
+      <p class="eyebrow">01 / ESPERIMENTI DA PROVARE</p>
+      <div class="section-intro"><h2 id="experiments-title">Dall'idea<br><span>a qualcosa che funziona.</span></h2><p>Comincio da un'attività semplice: trovare le righe ripetute in un elenco, senza controllarle una alla volta.</p></div>
+      <article class="lab-project" aria-labelledby="cleaner-title">
+        <div class="lab-project-intro">
+          <div class="lab-tags"><span class="lab-status">Demo funzionante</span><span>Dati e automazione</span><span>Progetto personale</span></div>
+          <h3 id="cleaner-title">Un elenco, senza doppioni.</h3>
+          <p>Incolla un elenco di attività o voci, una per riga. Lo strumento individua i duplicati e restituisce le righe uniche, mantenendo l'ordine della prima comparsa.</p>
+          <dl class="lab-project-facts">
+            <div><dt>Il problema</dt><dd>Voci ripetute da cercare e rimuovere manualmente.</dd></div>
+            <div><dt>La soluzione</dt><dd>Un controllo automatico delle righe, con un risultato da verificare e copiare.</dd></div>
+            <div><dt>Cosa dimostra</dt><dd>Elaborazione di dati, gestione degli errori e attenzione a chi usa lo strumento.</dd></div>
+          </dl>
+        </div>
+
+        <div class="lab-tool">
+          <div class="lab-tool-heading"><h4>Mettilo alla prova</h4><button type="button" id="load-example" class="copy-button">Carica un esempio</button></div>
+          <p class="lab-tool-note" id="data-note">Il testo viene elaborato soltanto in questa pagina: il codice non lo invia a un server e non lo salva. Per provare, puoi usare l'esempio già pronto.</p>
+          <noscript><p>Per utilizzare questo esperimento devi abilitare JavaScript nel browser.</p></noscript>
+          <form id="cleaner-form">
+            <label for="source-list">Il tuo elenco, una voce per riga</label>
+            <textarea id="source-list" rows="7" maxlength="20000" aria-describedby="data-note list-limits" placeholder="Controllare preventivo&#10;Aggiornare catalogo&#10;Controllare preventivo"></textarea>
+            <p class="lab-tool-note" id="list-limits">Massimo 500 righe non vuote e 20.000 caratteri. Le righe vuote e gli spazi iniziali e finali vengono ignorati.</p>
+            <label class="lab-checkbox"><input type="checkbox" id="ignore-case" checked> Considera uguali maiuscole e minuscole</label>
+            <div class="lab-tool-actions"><button type="submit" class="button">Trova i doppioni</button><button type="button" class="copy-button" id="clear-list">Svuota</button></div>
+          </form>
+          <p id="cleaner-status" role="status" aria-live="polite"></p>
+          <section id="cleaner-result" hidden aria-labelledby="result-title">
+            <h4 id="result-title">Il risultato da controllare</h4>
+            <dl class="lab-stats"><div><dt>Voci iniziali</dt><dd id="input-count">0</dd></div><div><dt>Voci uniche</dt><dd id="unique-count">0</dd></div><div><dt>Doppioni rimossi</dt><dd id="duplicate-count">0</dd></div></dl>
+            <label for="clean-list">Elenco senza doppioni</label>
+            <textarea id="clean-list" rows="6" readonly></textarea>
+            <button type="button" id="copy-list" class="copy-button">Copia il risultato</button>
+          </section>
+          <details class="lab-limits"><summary>Cosa fa e quali sono i limiti?</summary><p>Confronta righe intere, non il loro significato. Due nomi simili o scritti con un errore restano distinti. Gli spazi interni non vengono modificati. Non è un sistema per unire anagrafiche o verificare indirizzi email.</p><p>Realizzato con HTML, CSS e JavaScript, senza servizi esterni. Il risultato dipende dall'elenco inserito: non rappresenta un risparmio misurato presso un'azienda.</p></details>
+        </div>
+      </article>
+    </section>
+
+    <section class="wrap lab-next" aria-labelledby="next-title">
+      <p class="eyebrow">02 / UN PROGETTO ALLA VOLTA</p>
+      <h2 id="next-title">Imparare costruendo.<br><span>Mostrare come ragiono.</span></h2>
+      <p>Qui aggiungerò i prossimi esperimenti, indicando per ciascuno cosa funziona già, cosa sto studiando e cosa resta da migliorare. Preferisco una prova concreta a una promessa.</p>
+      <a class="text-link" href="../../#contatti">Hai un'attività simile da semplificare? Parliamone.</a>
+    </section>

@@ -4,7 +4,11 @@ Le caselle sono lasciate vuote perché vanno compilate **per ciascuna nuova vers
 
 ## Nella copia di sviluppo
 
-- [ ] `python3 scripts/check_site.py` termina senza errori.
+- [ ] `python3 scripts/build_pages.py --check`, `python3 scripts/check_site.py` e `python3 scripts/check_js.py` terminano senza errori.
+- [ ] Test algoritmi, formule, contenuti, trasferimento e tre suite browser superati; nessun test saltato senza segnalarlo.
+- [ ] `dist/site/` contiene solo file pubblici e funziona servita da sola.
+- [ ] Bozze escluse; nuovi progetti verificati e con diritti di pubblicazione.
+- [ ] Pathfinding: pausa, reset, ostacoli e nessun percorso. Checklist: risposte mancanti e report. Turni: conteggi e reset.
 - [ ] `node --check app.js` e `node --check contenuti.js` terminano senza errori.
 - [ ] `python3 tests/browser_smoke.py` passa, se gli strumenti browser sono disponibili.
 - [ ] Titolo, testi e contatti sono corretti; non ci sono clienti o risultati inventati.
@@ -26,7 +30,7 @@ Le caselle sono lasciate vuote perché vanno compilate **per ciascuna nuova vers
 
 ## Prima di caricare su Aruba
 
-- [ ] Pubblicazione compresa nell'autorizzazione ai push su main; per operazioni diverse verificare la richiesta del proprietario.
+- [ ] Nuova autorizzazione alla pubblicazione ottenuta: il master prompt corrente vieta commit/push/deploy all’assistente. Avvio manuale con publish attivo solo dopo verifica hosting.
 - [ ] Test del deploy e della homepage superati prima del collegamento al server.
 - [ ] Directory del sito riconosciuta univocamente o configurata con FTP_SERVER_DIR.
 - [ ] Backup dei file online da sostituire, conservato fuori dalla cartella pubblica.

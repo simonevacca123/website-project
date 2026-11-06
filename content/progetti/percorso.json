@@ -1,0 +1,24 @@
+{
+  "slug": "percorso",
+  "pubblicato": true,
+  "titolo": "Una mappa, due algoritmi",
+  "tipo": "Demo personale",
+  "categoria": "Algorithms",
+  "stato": "Demo funzionante",
+  "lab": true,
+  "descrizione": "Una griglia interattiva per confrontare ricerca in ampiezza e ricerca a costo minimo.",
+  "tecnologie": [
+    "JavaScript",
+    "BFS",
+    "Dijkstra"
+  ],
+  "demo": "/lab/percorso/",
+  "contesto": "Un esperimento didattico personale per rendere visibile come un algoritmo esplora una mappa.",
+  "problema": "Un percorso con pochi passi non è sempre quello meno costoso se il terreno cambia.",
+  "obiettivi": "Confrontare due algoritmi corretti, con ostacoli e costi modificabili, mostrando la ricerca passo passo.",
+  "soluzione": "BFS usa una coda; Dijkstra mantiene distanze e predecessori e sceglie il minimo fra le celle in attesa.",
+  "interfaccia": "Griglia con partenza, arrivo e ostacoli. Controlli per pausa, singolo passo, ripristino e navigazione tramite frecce.",
+  "scelte": "Logica pura separata dalla visualizzazione e testabile senza browser. Mappa limitata a 96 celle per una lettura comprensibile.",
+  "compromessi": "Quattro direzioni, costi positivi e nessun ostacolo in movimento. Dijkstra usa una selezione lineare, adatta a questa scala ma non a mappe enormi.",
+  "risultati": "Il caso di terreno lento mostra perché BFS può scegliere meno passi e Dijkstra un costo minore. La demo espone entrambi i valori e gestisce le mappe senza percorso."
+}

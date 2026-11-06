@@ -7,9 +7,10 @@ function createIcon(name){
   return svg;
 }
 
+document.querySelector('#brief-button').disabled = false;
 document.querySelector('#year').textContent = new Date().getFullYear();
 function safeUrl(url){try{const u=new URL(url);return ['https:','http:'].includes(u.protocol)?u.href:null;}catch{return null;}}
-(config.progetti||[]).forEach(p=>{const card=document.createElement('article');card.className='project-card';if(p.immagine&&/^assets\/[\w./-]+$/.test(p.immagine)&&!p.immagine.includes('..')){const img=document.createElement('img');img.src=p.immagine;img.alt=p.titolo||'Progetto';img.loading='lazy';card.append(img);}const label=document.createElement('span');label.className='pill';label.textContent=p.tipo||'Progetto';const title=document.createElement('h3');title.textContent=p.titolo;const desc=document.createElement('p');desc.textContent=p.descrizione;card.append(label,title,desc);const url=safeUrl(p.url);if(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Visita il progetto';a.append(createIcon('arrow-up-right'));card.append(a);}document.querySelector('#project-list').append(card);});
+(config.progetti||[]).filter(p=>p.pubblicato===true).forEach(p=>{const card=document.createElement('article');card.className='project-card';if(p.immagine&&/^assets\/[\w./-]+$/.test(p.immagine)&&!p.immagine.includes('..')){const img=document.createElement('img');img.src=p.immagine;img.alt=p.titolo||'Progetto';img.loading='lazy';card.append(img);}const label=document.createElement('span');label.className='pill';label.textContent=p.tipo||'Progetto';const title=document.createElement('h3');title.textContent=p.titolo;const desc=document.createElement('p');desc.textContent=p.descrizione;card.append(label,title,desc);const url=safeUrl(p.url);if(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Visita il progetto';a.append(createIcon('arrow-up-right'));card.append(a);}document.querySelector('#project-list').append(card);});
 const email=typeof config.email==='string'&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.email)?config.email:'';
 if(email){const link=document.querySelector('#email-link');link.hidden=false;link.href='mailto:'+encodeURIComponent(email);link.textContent=email;document.querySelector('#contact-note').textContent='Scrivimi direttamente oppure prepara una richiesta qui sotto.';document.querySelector('#brief-button').replaceChildren(document.createTextNode('Apri la richiesta nella tua email'),createIcon('arrow-up-right'));document.querySelector('#form-note').textContent='Si aprirà la tua app di posta: controlla il messaggio e invialo da lì. Il sito non salva questi dati.';}
 
@@ -26,9 +27,43 @@ function renderCase(key){currentCase=key;const c=cases[key];document.querySelect
 document.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>renderCase(b.dataset.case)));
 document.querySelector('#case-cta').addEventListener('click',()=>{document.querySelector('#service').value=cases[currentCase].service;});renderCase('requests');
 const nf=new Intl.NumberFormat('it-IT',{maximumFractionDigits:1});
-function calculate(){const m=Number(document.querySelector('#minutes').value),d=Number(document.querySelector('#days').value),r=Number(document.querySelector('#reduction').value);const before=m*d/60,saved=before*r/100;document.querySelector('#minutes-label').textContent=m+' min';document.querySelector('#days-label').textContent=d+' giorni';document.querySelector('#reduction-label').textContent=r+'%';document.querySelector('#hours').textContent=nf.format(saved);document.querySelector('#before-hours').textContent=nf.format(before)+' h';document.querySelector('#after-hours').textContent=nf.format(before-saved)+' h';document.querySelector('#after-bar').style.width=(100-r)+'%';}
-['minutes','days','reduction'].forEach(id=>document.querySelector('#'+id).addEventListener('input',calculate));document.querySelector('#reset-calc').addEventListener('click',()=>{document.querySelector('#minutes').value=30;document.querySelector('#days').value=20;document.querySelector('#reduction').value=50;calculate();});calculate();
-if((config.progetti||[]).length)document.querySelector('#project-section').hidden=false;
+function calculate() {
+  const m = Number(document.querySelector('#minutes').value);
+  const d = Number(document.querySelector('#days').value);
+  const r = Number(document.querySelector('#reduction').value);
+  const months = Number(document.querySelector('#active-months').value);
+  const field = document.querySelector('#hourly-rate');
+  const error = document.querySelector('#calc-error');
+  const raw = field.value.trim();
+  const invalid = !field.validity.valid || (raw !== '' && (!Number.isFinite(Number(raw)) || Number(raw) < 0 || Number(raw) > 10000));
+  const values = Efficiency.calculate({minutes:m, days:d, reduction:r, months, rate:raw === '' || invalid ? null : Number(raw)});
+  field.setAttribute('aria-invalid', String(invalid));
+  error.textContent = invalid ? 'Inserisci un valore orario da 0 a 10.000 euro, con massimo due decimali.' : '';
+  document.querySelector('#minutes-label').textContent = m + ' min';
+  document.querySelector('#days-label').textContent = d + ' giorni';
+  document.querySelector('#reduction-label').textContent = r + '%';
+  document.querySelector('#months-label').textContent = months + ' mesi';
+  document.querySelector('#hours').textContent = nf.format(values.saved);
+  document.querySelector('#before-hours').textContent = nf.format(values.before) + ' h';
+  document.querySelector('#after-hours').textContent = nf.format(values.after) + ' h';
+  document.querySelector('#after-bar').style.width = (100-r) + '%';
+  document.querySelector('#annual-hours').textContent = nf.format(values.annual);
+  const money = new Intl.NumberFormat('it-IT', {style:'currency', currency:'EUR'});
+  document.querySelector('#monthly-value').textContent = values.value === null ? 'Non indicato' : money.format(values.value);
+  document.querySelector('#annual-value').textContent = values.annualValue === null ? 'Non indicato' : money.format(values.annualValue);
+}
+['minutes','days','reduction','active-months','hourly-rate'].forEach(id => document.querySelector('#'+id).addEventListener('input',calculate));
+document.querySelector('#reset-calc').addEventListener('click', () => {
+  for (const [id,value] of Object.entries({minutes:30, days:20, reduction:50, 'active-months':12, 'hourly-rate':''})) document.querySelector('#'+id).value=value;
+  calculate();
+});
+calculate();
+if((config.progetti||[]).some(p=>p.pubblicato===true))document.querySelector('#project-section').hidden=false;
 
 document.querySelector('#brief-form').noValidate=true;
 ['name','message'].forEach(id=>document.querySelector('#'+id).addEventListener('input',e=>{e.target.removeAttribute('aria-invalid');if(document.querySelector('#brief-status').classList.contains('error-message')){document.querySelector('#brief-status').textContent='';document.querySelector('#brief-status').classList.remove('error-message');}}));
+
+// CTA contestuali: si accettano soltanto servizi già presenti nel modulo.
+const requestedService = new URLSearchParams(globalThis.location.search).get('servizio');
+const services = {sito:'Un sito web', software:'Un software su misura', automazione:'Un’automazione'};
+if (services[requestedService]) document.querySelector('#service').value = services[requestedService];
